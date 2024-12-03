@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Silvercare{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-4">
+        <div class="card text-white bg-primary mb-3">
+            <div class="card-header">My Tasks</div>
+            <div class="card-body">
+                <h5 class="card-title">View and manage your tasks</h5>
+                <p class="card-text">Keep track of your responsibilities and deadlines.</p>
+                <a href="{% url 'tasks:task_list' %}" class="btn btn-light">View Tasks</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card text-white bg-success mb-3">
+            <div class="card-header">Create a Task</div>
+            <div class="card-body">
+                <h5 class="card-title">Add new tasks easily</h5>
+                <p class="card-text">Stay organized by adding tasks with relevant details.</p>
+                <a href="{% url 'tasks:task_create' %}" class="btn btn-light">Create Task</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card text-white bg-warning mb-3">
+            <div class="card-header">Profile</div>
+            <div class="card-body">
+                <h5 class="card-title">Manage your profile</h5>
+                <p class="card-text">Update your information and preferences.</p>
+                <a href="#" class="btn btn-light">View Profile</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

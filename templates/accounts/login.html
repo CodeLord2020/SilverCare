@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Log In{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Log In</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-lg">
+                <div class="card-body">
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        <div class="mb-3 input-group">
+                            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                            <input type="email" name="username" id="email" class="form-control" placeholder="Email Address" required autofocus>
+                        </div>
+                        <div class="mb-4 input-group">
+                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                            <input type="password" name="password" id="password" class="form-control" placeholder="Password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Log In</button>
+                    </form>
+                </div>
+            </div>
+            <div class="text-center mt-3">
+                <a href="{% url 'register' %}" class="btn btn-outline-info w-100 py-2 mb-2">Sign Up</a>
+                <a href="{% url 'forgot-password' %}" class="btn btn-outline-warning w-100 py-2">Forgot Your Password?</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

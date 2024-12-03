@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to IDEA REVIEW</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .header {
+            text-align: center;
+            padding: 10px 0;
+            background-color: #0078d7;
+            color: #ffffff;
+            border-radius: 8px 8px 0 0;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .body {
+            padding: 20px;
+            color: #333333;
+            line-height: 1.6;
+        }
+        .body p {
+            margin: 0 0 20px;
+        }
+        .button {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .button a {
+            background-color: #0078d7;
+            color: #ffffff;
+            padding: 12px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+            display: inline-block;
+        }
+        .button a:hover {
+            background-color: #005bb5;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #666666;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <h1>Welcome to IDEA REVIEW</h1>
+        </div>
+        <div class="body">
+            <p>Hi {{ full_name }},</p>
+            <p>Thank you for joining <strong>IDEA REVIEW</strong>! We're thrilled to have you onboard. This platform connects mentees with mentors to review and develop groundbreaking ideas.</p>
+            <p>To get started, we need you to verify your email address. Simply click the button below:</p>
+            <div class="button">
+                <a href="{{ verification_url }}" target="_blank">Verify My Account</a>
+            </div>
+            <p>If the button above doesn't work, copy and paste the following link into your browser:</p>
+            <p><a href="{{ verification_url }}">{{ verification_url }}</a></p>
+            <p>Once your account is verified, you can log in and start proposing your amazing ideas to mentors in your field of interest!</p>
+            <p>Cheers,<br>The IDEA REVIEW Team</p>
+        </div>
+        <div class="footer">
+            <p>If you didn't sign up for IDEA REVIEW, please ignore this email or contact support.</p>
+            <p>&copy; 2024 IDEA REVIEW. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>
