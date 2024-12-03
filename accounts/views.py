@@ -73,6 +73,17 @@ class CustomLoginView(auth_views.LoginView):
     redirect_field_name = 'next'
     redirect_to = reverse_lazy('home')
 
+    def form_valid(self, form):
+        # This method is called when the form is successfully validated.
+        user = form.get_user()
+        messages.success(self.request, f"Welcome back, {user.first_name}!")
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        # This method is called when the form validation fails.
+        messages.error(self.request, "Invalid username or password.")
+        return super().form_invalid(form)
+
 
 
 class CustomLogoutView(auth_views.LogoutView):

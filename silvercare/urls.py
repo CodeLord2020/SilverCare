@@ -20,9 +20,7 @@ from accounts.views import DashboardView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path('',
-          DashboardView.as_view(),
-            name='home'),
+    path('', DashboardView.as_view(), name='home'),
     path('accounts/', include('accounts.urls')),
     path('tasks/', include('eldertasks.urls')),
     

@@ -1,10 +1,108 @@
 {% extends "base.html" %}
+{% load widget_tweaks %}
 {% block title %}Create Task{% endblock %}
 {% block content %}
-    <h1>Create a New Task</h1>
-    <form method="post" class="mt-4">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-success">Submit</button>
-    </form>
+<div class="container mt-5">
+    <div class="d-flex justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg border-0">
+                <!-- Card Header with Gradient -->
+                <div class="card-header bg-gradient bg-primary bg-dark text-white text-center">
+                    <h2>Create a New Task</h2>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        
+                        <!-- Title Field -->
+                        <div class="form-group mb-4">
+                            <label for="title" class="form-label fw-bold">Title</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="fas fa-heading"></i></span>
+                                {{ form.title|add_class:"form-control shadow-sm" }}
+                            </div>
+                        </div>
+
+                        <!-- Description Field -->
+                        <div class="form-group mb-4">
+                            <label for="description" class="form-label fw-bold">Description</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="fas fa-align-left"></i></span>
+                                {{ form.description|add_class:"form-control shadow-sm" }}
+                            </div>
+                        </div>
+
+                        <!-- Budget Field -->
+                        <div class="form-group mb-4">
+                            <label for="budget" class="form-label fw-bold">Budget</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="fas fa-dollar-sign"></i></span>
+                                {{ form.budget|add_class:"form-control shadow-sm" }}
+                            </div>
+                        </div>
+
+                        <!-- Task Type Field -->
+                        <div class="form-group mb-4">
+                            <label for="task_type" class="form-label fw-bold">Task Type</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="fas fa-tasks"></i></span>
+                                {{ form.task_type|add_class:"form-control shadow-sm" }}
+                            </div>
+                        </div>
+
+                        <!-- Location Field -->
+                        <div class="form-group mb-4">
+                            <label for="location" class="form-label fw-bold">Location</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="fas fa-map-marker-alt"></i></span>
+                                {{ form.location|add_class:"form-control shadow-sm" }}
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg shadow-sm">
+                                <i class="fas fa-paper-plane"></i> Submit
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Display Errors -->
+                    {% if form.errors %}
+                        <div class="alert alert-danger mt-4">
+                            <strong>Errors:</strong>
+                            <ul>
+                                {% for field, errors in form.errors.items %}
+                                    {% for error in errors %}
+                                        <li>{{ field|capfirst }}: {{ error }}</li>
+                                    {% endfor %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        background: linear-gradient(to bottom, #ebf0f0, #332929);
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .bg-gradient {
+        background: linear-gradient(to right, #2bcd30, #fefefe);
+    }
+
+    .form-control:focus {
+        border-color: #4caf50;
+        box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+    }
+
+    button:hover {
+        background: #00695c !important;
+    }
+</style>
 {% endblock %}

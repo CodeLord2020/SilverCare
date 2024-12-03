@@ -48,11 +48,18 @@ INSTALLED_APPS = [
     'import_export',
     'phonenumber_field',
     'rangefilter',
+    "widget_tweaks",
 
     #local app
     'accounts',
     'eldertasks'
 ]
+
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
+
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

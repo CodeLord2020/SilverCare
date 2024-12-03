@@ -62,8 +62,6 @@ class CustomAuthenticationForm(AuthenticationForm):
         
 
 
-
-
 class CustomSetPasswordForm(forms.Form):
     """
     Custom form for resetting the user's password.

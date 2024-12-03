@@ -5,15 +5,40 @@
     <h1 class="text-center mb-4">Create an Account</h1>
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <div class="card">
+            <div class="card shadow-lg">
                 <div class="card-body">
                     <form method="post" novalidate>
                         {% csrf_token %}
-                        {{ form.as_p }}
-                        <button type="submit" class="btn btn-primary w-100 mt-3">Sign Up</button>
+                        
+                        <!-- Username Field -->
+                        <div class="mb-3 input-group">
+                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            <input type="text" name="username" id="username" class="form-control" placeholder="Username" required>
+                        </div>
+
+                        <!-- Email Field -->
+                        <div class="mb-3 input-group">
+                            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                            <input type="email" name="email" id="email" class="form-control" placeholder="Email Address" required>
+                        </div>
+
+                        <!-- Password Field -->
+                        <div class="mb-3 input-group">
+                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                            <input type="password" name="password1" id="password1" class="form-control" placeholder="Password" required>
+                        </div>
+
+                        <!-- Confirm Password Field -->
+                        <div class="mb-4 input-group">
+                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                            <input type="password" name="password2" id="password2" class="form-control" placeholder="Confirm Password" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">Sign Up</button>
                     </form>
+
                     {% if form.errors %}
-                        <div class="alert alert-danger">
+                        <div class="alert alert-danger mt-3">
                             <ul>
                                 {% for field, errors in form.errors.items %}
                                     {% for error in errors %}
@@ -23,12 +48,14 @@
                             </ul>
                         </div>
                     {% endif %}
-
                 </div>
             </div>
+
             <div class="text-center mt-3">
-                <p>Already have an account? <a href="{% url 'login' %}">Log In</a></p>
-                <p><a href="{% url 'forgot-password' %}">Forgot your password?</a></p>
+                <p>Already have an account?</p>
+                <a class="btn btn-outline-info w-50 py-2 mb-2" href="{% url 'login' %}">Log In</a>
+                <a class="btn btn-outline-danger w-50 h-9 py-2 mb-2" href="{% url 'forgot-password' %}">Forgot your password?</a>
+
             </div>
         </div>
     </div>

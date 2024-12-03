@@ -16,7 +16,7 @@
     <header class="bg-dark text-white py-2">
         <div class="container">
             <nav class="navbar navbar-expand-lg navbar-dark">
-                <a class="navbar-brand" href="{% url 'tasks:task_list' %}">Silvercare</a>
+                <a class="navbar-brand" href="{% url 'home' %}">Silvercare</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -29,7 +29,11 @@
                             <a class="nav-link" href="{% url 'tasks:task_create' %}">Create Task</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Logout</a>
+                            {% if user.is_authenticated %}
+                              <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                            {% else %}
+                              <a class="nav-link" href="{% url 'login' %}">Login</a>
+                            {% endif %}
                         </li>
                     </ul>
                 </div>
@@ -51,6 +55,23 @@
         {% endfor %}
         </div>
     {% endif %}
+
+    <!-- Footer Section -->
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container text-center">
+            <p>&copy; 2024 Silvercare. All rights reserved.</p>
+            <div class="social-icons">
+                <a href="#" class="text-white mx-3"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="text-white mx-3"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="text-white mx-3"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="text-white mx-3"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+            <p class="mt-2">
+                <a href="#" class="text-white">Privacy Policy</a> | 
+                <a href="#" class="text-white">Terms of Service</a>
+            </p>
+        </div>
+    </footer>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

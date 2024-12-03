@@ -2,12 +2,12 @@
 {% block title %}Log In{% endblock %}
 {% block content %}
 <div class="container mt-5">
-    <h1 class="text-center mb-4">Log In</h1>
+    <h1 class="text-center mb-4" style="color: rgb(255, 255, 255); font-weight: 800; font-size:xx-large;">Log In</h1>
     <div class="row justify-content-center">
         <div class="col-md-6 col-lg-4">
             <div class="card shadow-lg">
                 <div class="card-body">
-                    <form method="post" novalidate>
+                    <form method="post" action="{% url 'login' %}" novalidate>
                         {% csrf_token %}
                         <div class="mb-3 input-group">
                             <span class="input-group-text"><i class="fas fa-envelope"></i></span>
@@ -23,7 +23,7 @@
             </div>
             <div class="text-center mt-3">
                 <a href="{% url 'register' %}" class="btn btn-outline-info w-100 py-2 mb-2">Sign Up</a>
-                <a href="{% url 'forgot-password' %}" class="btn btn-outline-warning w-100 py-2">Forgot Your Password?</a>
+                <a href="{% url 'forgot-password' %}" class="btn btn-outline-danger w-100 py-2">Forgot Your Password?</a>
             </div>
         </div>
     </div>

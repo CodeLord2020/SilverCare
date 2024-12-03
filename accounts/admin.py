@@ -24,7 +24,7 @@ class UserResource(resources.ModelResource):
         export_order = fields
         import_id_fields = ('email',)
 
-
+@admin.register(User)
 class CustomUserAdmin(UserAdmin, ImportExportModelAdmin):
     resource_classes = UserResource
     
