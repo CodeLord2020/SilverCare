@@ -24,7 +24,8 @@ button {
 
 
 body {
-    background-image: url('../img/sc1.jpg');
+    background-image: url('../img/sc3.jpg');
+    background-blend-mode: darken;
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
@@ -83,4 +84,37 @@ button {
     background-color: #114884;
     color: white;
     transition: all 0.3s;
+}
+
+
+.task-card {
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.task-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.task-card-blue {
+    border-top: 4px solid #007bff;
+    background-color: #cbe1f9;
+}
+
+.task-card-green {
+    border-top: 4px solid #28a745;
+    background-color: #c2ebcc;
+}
+
+.task-card-yellow {
+    border-top: 4px solid #ffc107;
+    background-color: #f3e6bd;
+}
+
+.icon-container i {
+    transition: color 0.3s ease-in-out;
+}
+
+.icon-container i:hover {
+    color: #ff9800;
 }

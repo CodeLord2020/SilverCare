@@ -7,9 +7,10 @@ from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Task, TaskApplication, Review
 from .forms import TaskForm, TaskApplicationForm, ReviewForm
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Task List View (Elder View - Only their tasks)
-class TaskListView(ListView):
+class TaskListView(LoginRequiredMixin, ListView):
     model = Task
     template_name = "tasks/task_list.html"
     context_object_name = "tasks"
@@ -20,7 +21,7 @@ class TaskListView(ListView):
 
 
 # Task Detail View (Includes Applications)
-class TaskDetailView(DetailView):
+class TaskDetailView(LoginRequiredMixin, DetailView):
     model = Task
     template_name = "tasks/task_detail.html"
     context_object_name = "task"
@@ -33,7 +34,7 @@ class TaskDetailView(DetailView):
 
 
 # Task Create View (Elder Creates Task)
-class TaskCreateView(CreateView):
+class TaskCreateView(LoginRequiredMixin, CreateView):
     model = Task
     template_name = "tasks/task_form.html"
     form_class = TaskForm
@@ -44,7 +45,7 @@ class TaskCreateView(CreateView):
 
 
 # Task Update View
-class TaskUpdateView(UpdateView):
+class TaskUpdateView(LoginRequiredMixin, UpdateView):
     model = Task
     template_name = "tasks/task_form.html"
     form_class = TaskForm
@@ -55,7 +56,7 @@ class TaskUpdateView(UpdateView):
 
 
 # Task Delete View
-class TaskDeleteView(DeleteView):
+class TaskDeleteView(LoginRequiredMixin, DeleteView):
     model = Task
     template_name = "tasks/task_confirm_delete.html"
     success_url = reverse_lazy("tasks:task_list")
@@ -66,7 +67,7 @@ class TaskDeleteView(DeleteView):
 
 
 # Apply for a Task (Helper Applies)
-class TaskApplicationCreateView(CreateView):
+class TaskApplicationCreateView(LoginRequiredMixin, CreateView):
     model = TaskApplication
     form_class = TaskApplicationForm
 
@@ -81,7 +82,7 @@ class TaskApplicationCreateView(CreateView):
 
 
 # Review Submission View
-class ReviewCreateView(View):
+class ReviewCreateView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         task = get_object_or_404(Task, id=kwargs["task_id"])
         if task.status == "Completed" and task.elder == request.user:

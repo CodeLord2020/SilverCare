@@ -56,9 +56,9 @@ INSTALLED_APPS = [
 ]
 
 
-AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
-]
+# AUTHENTICATION_BACKENDS = [
+#     'django.contrib.auth.backends.ModelBackend',
+# ]
 
 
 MIDDLEWARE = [
@@ -163,7 +163,7 @@ DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 # LOGIN_REDIRECT_URL = 'home'
 LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = 'login'
+LOGOUT_REDIRECT_URL = '/'
 LOGIN_URL = 'login'
 
 SITE_DOMAIN = "https://silvercare.onrender.com"

@@ -4,7 +4,7 @@ from .views import (
     PasswordResetConfirmView,
     UserRegistrationView,
     CustomLoginView,
-    CustomLogoutView,
+    logout,
     ForgotPasswordView,
 )
 
@@ -17,8 +17,11 @@ urlpatterns = [
     path('auth/login/', 
          CustomLoginView.as_view(), 
          name='login'),
-    path('auth/logout/', 
-         CustomLogoutView.as_view(), 
+#     path('auth/logout/', 
+#          CustomLogoutView.as_view(), 
+#          name='logout'),
+     path('auth/logout/', 
+         logout, 
          name='logout'),
     path('auth/verify/<uidb64>/<token>/', 
          AccountVerificationView.as_view(), 

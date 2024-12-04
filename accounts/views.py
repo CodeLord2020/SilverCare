@@ -14,6 +14,7 @@ from django.contrib import messages
 from django.contrib.auth.tokens import default_token_generator
 from django.urls import path
 from .utils import AccountVerificationService
+from django.contrib import auth
 from .models import User
 from .forms import (
     CustomUserCreationForm, 
@@ -86,12 +87,15 @@ class CustomLoginView(auth_views.LoginView):
 
 
 
-class CustomLogoutView(auth_views.LogoutView):
-    """
-    Customized logout view
-    """
-    next_page = 'login'
+# class CustomLogoutView(auth_views.LogoutView):
+#     """
+#     Customized logout view
+#     """
+#     # next_page = 'login'
 
+def logout(request):
+    auth.logout(request)
+    return redirect('login')
 
 
 

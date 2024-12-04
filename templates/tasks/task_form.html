@@ -2,72 +2,96 @@
 {% load widget_tweaks %}
 {% block title %}Create Task{% endblock %}
 {% block content %}
-<div class="container mt-5">
-    <div class="d-flex justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow-lg border-0">
-                <!-- Card Header with Gradient -->
-                <div class="card-header bg-gradient bg-primary bg-dark text-white text-center">
-                    <h2>Create a New Task</h2>
+<div class="container py-5">
+    <!-- Animated Background -->
+    <!-- <div class="animated-bg position-absolute top-0 start-0 w-100 h-100"></div> -->
+
+    <div class="row justify-content-center" style="position: relative; z-index: 2;">
+
+        <!-- Left Content: About the App -->
+        <div class="col-lg-5 col-md-6 col-sm-12 mb-5">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header bg-primary text-white text-center rounded-top-4">
+                    <h3 class="fw-bold">About Elderly Assistance</h3>
                 </div>
                 <div class="card-body p-4">
+                    <p>
+                        Our Elderly Assistance platform is designed to help seniors and their caregivers create and manage tasks seamlessly. 
+                        Whether you need help with groceries, medical appointments, or household chores, we've got you covered.
+                    </p>
+                    <p>
+                        Empower your loved ones with the support they need to stay independent, connected, and healthy.
+                    </p>
+                </div>
+            </div>
+
+            <div class="card shadow-lg border-0 mt-4 rounded-4">
+                <div class="card-header bg-dark text-white text-center rounded-top-4">
+                    <h4 class="fw-bold">Why It Matters</h4>
+                </div>
+                <div class="card-body p-4">
+                    <ul>
+                        <li class="mb-3"><strong>Independence:</strong> Help seniors maintain their independence by handling daily errands.</li>
+                        <li class="mb-3"><strong>Companionship:</strong> Encourage social interactions through task collaborations.</li>
+                        <li class="mb-3"><strong>Health:</strong> Ensure timely access to medical care and supplies.</li>
+                        <li><strong>Convenience:</strong> Simplify life for caregivers by organizing tasks effectively.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Content: Form -->
+        <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+                <!-- Gradient Header -->
+                <div class="card-header text-center text-white p-4" style="background: linear-gradient(45deg, #1e3c72, #2a5298);">
+                    <h2 class="mb-0 fw-bold">Create a New Task</h2>
+                </div>
+
+                <!-- Card Body -->
+                <div class="card-body p-5">
                     <form method="post" novalidate>
                         {% csrf_token %}
-                        
+
                         <!-- Title Field -->
-                        <div class="form-group mb-4">
-                            <label for="title" class="form-label fw-bold">Title</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light"><i class="fas fa-heading"></i></span>
-                                {{ form.title|add_class:"form-control shadow-sm" }}
-                            </div>
+                        <div class="form-floating mb-4">
+                            {{ form.title|add_class:"form-control shadow-sm rounded-3" }}
+                            <label for="id_title"><i class="fas fa-heading me-2"></i>Task Title</label>
                         </div>
 
                         <!-- Description Field -->
-                        <div class="form-group mb-4">
-                            <label for="description" class="form-label fw-bold">Description</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light"><i class="fas fa-align-left"></i></span>
-                                {{ form.description|add_class:"form-control shadow-sm" }}
-                            </div>
+                        <div class="form-floating mb-4">
+                            {{ form.description|add_class:"form-control shadow-sm rounded-3" }}
+                            <label for="id_description"><i class="fas fa-align-left me-2"></i>Description</label>
                         </div>
 
                         <!-- Budget Field -->
-                        <div class="form-group mb-4">
-                            <label for="budget" class="form-label fw-bold">Budget</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light"><i class="fas fa-dollar-sign"></i></span>
-                                {{ form.budget|add_class:"form-control shadow-sm" }}
-                            </div>
+                        <div class="form-floating mb-4">
+                            {{ form.budget|add_class:"form-control shadow-sm rounded-3" }}
+                            <label for="id_budget"><i class="fas fa-dollar-sign me-2"></i>Budget</label>
                         </div>
 
                         <!-- Task Type Field -->
-                        <div class="form-group mb-4">
-                            <label for="task_type" class="form-label fw-bold">Task Type</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light"><i class="fas fa-tasks"></i></span>
-                                {{ form.task_type|add_class:"form-control shadow-sm" }}
-                            </div>
+                        <div class="form-floating mb-4">
+                            {{ form.task_type|add_class:"form-control shadow-sm rounded-3" }}
+                            <label for="id_task_type"><i class="fas fa-tasks me-2"></i>Task Type</label>
                         </div>
 
                         <!-- Location Field -->
-                        <div class="form-group mb-4">
-                            <label for="location" class="form-label fw-bold">Location</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light"><i class="fas fa-map-marker-alt"></i></span>
-                                {{ form.location|add_class:"form-control shadow-sm" }}
-                            </div>
+                        <div class="form-floating mb-4">
+                            {{ form.location|add_class:"form-control shadow-sm rounded-3" }}
+                            <label for="id_location"><i class="fas fa-map-marker-alt me-2"></i>Location</label>
                         </div>
 
                         <!-- Submit Button -->
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-primary btn-lg shadow-sm">
-                                <i class="fas fa-paper-plane"></i> Submit
+                            <button type="submit" class="btn btn-primary btn-lg shadow rounded-pill fw-bold">
+                                <i class="fas fa-paper-plane me-2"></i>Submit Task
                             </button>
                         </div>
                     </form>
 
-                    <!-- Display Errors -->
+                    <!-- Error Messages -->
                     {% if form.errors %}
                         <div class="alert alert-danger mt-4">
                             <strong>Errors:</strong>
@@ -83,26 +107,90 @@
                 </div>
             </div>
         </div>
+
+    </div>
+
+    <!-- Testimonials Section -->
+    <div class="row mt-5" style="position: relative; z-index: 2;">
+        <div class="col-12">
+            <div class="text-center mb-4">
+                <h3 class="fw-bold;">What People Are Saying</h3>
+                <p class="fw-bold text-muted">Real stories from users who’ve benefited from our services.</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card shadow border-0 rounded-4">
+                        <div class="card-body">
+                            <blockquote class="blockquote">
+                                <p>"I couldn’t have managed my weekly errands without this app. It’s been a lifesaver!"</p>
+                                <footer class="blockquote-footer">Jane Doe, 78</footer>
+                            </blockquote>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow border-0 rounded-4">
+                        <div class="card-body">
+                            <blockquote class="blockquote">
+                                <p>"As a caregiver, this app has streamlined my daily responsibilities immensely."</p>
+                                <footer class="blockquote-footer">Michael Smith, 45</footer>
+                            </blockquote>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow border-0 rounded-4">
+                        <div class="card-body">
+                            <blockquote class="blockquote">
+                                <p>"I feel so much more connected and cared for. Highly recommend this platform!"</p>
+                                <footer class="blockquote-footer">Dorothy Jenkins, 82</footer>
+                            </blockquote>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
+<!-- Styles for Enhanced Design -->
 <style>
     body {
-        background: linear-gradient(to bottom, #ebf0f0, #332929);
         font-family: 'Poppins', sans-serif;
+        overflow-x: hidden;
     }
 
-    .bg-gradient {
-        background: linear-gradient(to right, #2bcd30, #fefefe);
+    .animated-bg {
+        background: linear-gradient(-90deg, #ffffff, #92a0b8, #c6edf6, #c1c8c9);
+        background-size: 400% 400%;
+        animation: gradientAnimation 10s ease infinite;
     }
 
-    .form-control:focus {
-        border-color: #4caf50;
-        box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+    @keyframes gradientAnimation {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    .form-floating label {
+        color: #6c757d;
+    }
+
+    .form-floating .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
     }
 
     button:hover {
-        background: #00695c !important;
+        background-color: #0056b3 !important;
+        transform: scale(1.02);
+        transition: all 0.3s ease-in-out;
     }
+
+    .card-header {
+        font-size: 1.5rem;
+    }
+
+
 </style>
 {% endblock %}
