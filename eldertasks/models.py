@@ -2,6 +2,7 @@ from django.db import models
 import uuid
 # Create your models here.
 from django.utils.text import slugify
+from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.conf import settings
 from cloudinary.models import CloudinaryField
@@ -148,6 +149,16 @@ class TaskMedia(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def clean(self):
+        if self.task and self.task.taskmedia.count() >= 3:
+        # if TaskMedia.objects.filter(task = self.task).count() >= 3:
+            raise ValidationError(message="Limit media reached for this Task")
+        
+    def save(self, *args, **kwargs):
+        # if self.task.taskmedia.count() >= 3:
+        #     raise ValidationError("A task cannot have more than 3 media resources.")
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.task.title} media resource"

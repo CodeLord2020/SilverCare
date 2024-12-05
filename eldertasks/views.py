@@ -1,13 +1,16 @@
 from django.shortcuts import render
-
 # Create your views here.
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Task, TaskApplication, Review
-from .forms import TaskForm, TaskApplicationForm, ReviewForm
+from .models import Task, TaskApplication, Review, TaskMedia
+from .forms import TaskForm, TaskApplicationForm, ReviewForm, TaskMediaForm
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import JsonResponse
+from django.core.exceptions import ValidationError
+
+
 
 # Task List View (Elder View - Only their tasks)
 class TaskListView(LoginRequiredMixin, ListView):
@@ -30,6 +33,7 @@ class TaskDetailView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context["applications"] = self.object.applications.all()
         context["review_form"] = ReviewForm()  # If the task is completed, elder can leave a review
+        context["media_urls"] = [media.media.url for media in self.object.taskmedia.all()]
         return context
 
 
@@ -42,17 +46,77 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.elder = self.request.user
         return super().form_valid(form)
+    
 
-
-# Task Update View
 class TaskUpdateView(LoginRequiredMixin, UpdateView):
     model = Task
-    template_name = "tasks/task_form.html"
+    template_name = "tasks/taskupdate_form.html"
     form_class = TaskForm
 
+    def get_success_url(self):
+        return reverse_lazy("tasks:task_detail", kwargs={"pk": self.object.pk})
+
     def get_queryset(self):
-        # Ensure only task owners can edit
+        # Ensure only the owner can edit
         return Task.objects.filter(elder=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["media_form"] = TaskMediaForm()
+        return context
+
+class TaskMediaUploadView(LoginRequiredMixin, View):
+    def post(self, request, pk, *args, **kwargs):
+        # Fetch the task instance
+        task = Task.objects.filter(id=pk, elder=request.user).first()
+        if not task:
+            return JsonResponse({"error": "Task not found or unauthorized."}, status=403)
+
+        # Handle the uploaded files
+        media_files = request.FILES.getlist("media")
+        if not media_files:
+            return JsonResponse({"error": "No files uploaded."}, status=400)
+
+        # Validate media count
+        if len(media_files) + task.taskmedia.count() > 3:
+            return JsonResponse({"error": "You can upload a maximum of 3 media files."}, status=400)
+
+        # Save each file as a new TaskMedia instance
+        for file in media_files:
+            TaskMedia.objects.create(task=task, media=file)
+
+        return redirect('tasks:task_edit', pk=task.pk)
+
+        # return JsonResponse({"success": "Media uploaded successfully!"})
+
+
+# class TaskMediaUploadView(LoginRequiredMixin, View):
+#     def post(self, request, pk, *args, **kwargs):
+#         print("task pk got here: ",pk)
+#         task = Task.objects.filter(id=pk, elder=request.user).first()
+#         print("task instance got here: ", task.elder.first_name)
+#         if not task:
+#             return JsonResponse({"error": "Task not found or unauthorized."}, status=403)
+
+#         media_form = TaskMediaForm(request.POST, request.FILES, task=task)
+#         if media_form.is_valid():
+#             print("media form valid got here: ",pk)
+#             if task.taskmedia.count() >= 3:
+#                 count = task.taskmedia.count()
+#                 print("task media count got here: ", count)
+#                 return JsonResponse({"error": "You can upload a maximum of 3 media files."}, status=400)
+#             # Handle multiple files if needed
+#             media_files = request.FILES.getlist("media")
+#             for file in media_files:
+#                 media_form.instance = TaskMedia(task=task, media=file)
+#                 media_form.save()
+
+#             # for file in media_files:
+#             #     TaskMedia.objects.create(task=task, media=file)
+#             return JsonResponse({"success": "Media uploaded successfully!"})
+
+#         return JsonResponse({"error": media_form.errors}, status=400)
+
 
 
 # Task Delete View
@@ -64,6 +128,13 @@ class TaskDeleteView(LoginRequiredMixin, DeleteView):
     def get_queryset(self):
         # Ensure only task owners can delete
         return Task.objects.filter(elder=self.request.user)
+
+
+def task_media_delete(request, pk):
+    media = get_object_or_404(TaskMedia, pk=pk)
+    task = media.task
+    media.delete()
+    return redirect('tasks:task_edit', pk=task.pk)
 
 
 # Apply for a Task (Helper Applies)

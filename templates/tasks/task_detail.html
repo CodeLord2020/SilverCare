@@ -5,9 +5,15 @@
     <div class="card my-4">
         <div class="card-body">
             <h5 class="card-title">Task Details</h5>
+            <div class="task-media">
+                {% for url in media_urls %}
+                    <img src="{{ url }}" alt="Task Media" class="task-media-img">
+                {% endfor %}
+            </div>
             <p class="card-text"><strong>Description:</strong> {{ task.description }}</p>
             <p class="card-text"><strong>Budget:</strong> {{ task.budget }}</p>
             <p class="card-text"><strong>Status:</strong> {{ task.get_status_display }}</p>
+            <p class="card-text"><strong>Location':</strong> {{ task.location }}</p>
         </div>
     </div>
     <h4>Applications</h4>

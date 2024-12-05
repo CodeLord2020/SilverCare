@@ -1,0 +1,274 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+{% block title %}Create Task{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <!-- Animated Background -->
+    <!-- <div class="animated-bg position-absolute top-0 start-0 w-100 h-100"></div> -->
+
+    <div class="row justify-content-center" style="position: relative; z-index: 2;">
+            <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+                <!-- Gradient Header -->
+                <div class="card-header text-center text-white p-4" style="background: linear-gradient(45deg, #1e3c72, #2a5298);">
+                    <h2 class="mb-0 fw-bold">Update Task</h2>
+                </div>
+
+                <div class="container py-4">
+                    <!-- Section: Existing Media -->
+                    <h3 class="mb-3">Existing Media</h3>
+                    <div class="row g-3">
+                        {% if task.taskmedia.exists %}
+                            {% for media in task.taskmedia.all %}
+                                <div class="col-md-4">
+                                    <div class="card shadow-sm">
+                                        <img 
+                                            src="{{ media.media.url|default:'' }}" 
+                                            alt="Task Media" 
+                                            class="card-img-top img-fluid rounded" 
+                                            style="height: 200px; object-fit: contain;">
+                                        <div class="card-body text-center">
+                                            <small class="text-muted">Uploaded on {{ media.created_at|date:"M d, Y" }}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted text-center">No media uploaded for this task yet.</p>
+                        {% endif %}
+                    </div>
+                
+                    <!-- Divider -->
+                    <hr class="my-4">
+                
+                    <!-- Section: Add New Media -->
+                    <h3 class="mb-3">Add New Media</h3>
+                    <form id="media-upload-form" 
+                          action="{% url 'tasks:task_media_upload' task.id %}" 
+                          method="post" 
+                          enctype="multipart/form-data" 
+                          class="needs-validation" 
+                          novalidate>
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="media" class="form-label fw-bold">Upload Images</label>
+                            <input type="file" 
+                                   name="media" 
+                                   id="media" 
+                                   class="form-control shadow-sm rounded" 
+                                   accept="image/*" 
+                                   multiple 
+                                   required>
+                            <div class="form-text">Task picture (Max 5MB, recommended 500x500px).</div>
+                        </div>
+                        <div class="d-grid">
+                            <button id="upload-media-btn" type="submit" class="btn btn-primary btn-lg shadow rounded-pill fw-bold">
+                                <i class="fas fa-upload me-2"></i>Upload Media
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- <div class="card-body p-5">
+                    <h3>Existing Media</h3>
+                    <div class="row g-3 mb-4">
+                        {% for media in task.taskmedia.all %}
+                        <div class="col-md-4 col-sm-6">
+                            <div class="card shadow-sm border-0 rounded-3">
+                                <img src="{{ media.media.url }}" alt="Task Media" class="card-img-top">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-end">
+                                        <a href="{% url 'tasks:task_media_delete' media.id %}" class="btn btn-danger btn-sm">Remove</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <h3>Add New Media</h3>
+                    <form id="media-upload-form" 
+                        action="{% url 'tasks:task_media_upload' task.id %}" 
+                        method="post" 
+                        enctype="multipart/form-data" 
+                        novalidate>
+                        {% csrf_token %}
+                        {{ media_form.as_p }}
+                        <div class="d-grid">
+                            <button id="upload-media-btn" type="submit" class="btn btn-primary btn-lg shadow rounded-pill fw-bold">
+                                <i class="fas fa-upload me-2"></i>Upload Media
+                            </button>
+                        </div>
+                    </form> -->
+
+                    <!-- <script>
+                        document.getElementById("upload-media-btn").addEventListener("click", function () {
+                            const form = document.getElementById("media-upload-form");
+                            const formData = new FormData(form);
+                    
+                            fetch("{% url 'tasks:task_media_upload' task.pk %}", {
+                                method: "POST",
+                                headers: {
+                                    "X-CSRFToken": "{{ csrf_token }}",
+                                },
+                                body: formData,
+                            })
+                            .then((response) => response.json())
+                            .then((data) => {
+                                if (data.success) {
+                                    alert(data.success);
+                                    location.reload();
+                                } else {
+                                    alert(data.error);
+                                }
+                            })
+                            .catch((error) => {
+                                console.error("Error:", error);
+                            });
+                        });
+                    </script> -->
+
+                <!-- Card Body -->
+                <h3 class="mt-5">Update Task Details</h3>
+                    <form action="{% url 'tasks:task_edit' task.id %}" method="post" novalidate>
+                        {% csrf_token %}
+
+                        <!-- Title Field -->
+                        <div class="form-floating mb-4">
+                            {{ form.title|add_class:"form-control shadow-sm rounded-3" }}
+                            <label for="id_title"><i class="fas fa-heading me-2"></i>Task Title</label>
+                        </div>
+
+                        <!-- Description Field -->
+                        <div class="form-floating mb-4">
+                            {{ form.description|add_class:"form-control shadow-sm rounded-3" }}
+                            <label for="id_description"><i class="fas fa-align-left me-2"></i>Description</label>
+                        </div>
+
+                        <!-- Budget Field -->
+                        <div class="form-floating mb-4">
+                            {{ form.budget|add_class:"form-control shadow-sm rounded-3" }}
+                            <label for="id_budget"><i class="fas fa-dollar-sign me-2"></i>Budget</label>
+                        </div>
+
+                        <!-- Task Type Field -->
+                        <div class="form-floating mb-4">
+                            {{ form.task_type|add_class:"form-control shadow-sm rounded-3" }}
+                            <label for="id_task_type"><i class="fas fa-tasks me-2"></i>Task Type</label>
+                        </div>
+
+                        <!-- Location Field -->
+                        <div class="form-floating mb-4">
+                            {{ form.location|add_class:"form-control shadow-sm rounded-3" }}
+                            <label for="id_location"><i class="fas fa-map-marker-alt me-2"></i>Location</label>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg shadow rounded-pill fw-bold">
+                                <i class="fas fa-paper-plane me-2"></i>Submit Task
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Error Messages -->
+                    {% if form.errors %}
+                        <div class="alert alert-danger mt-4">
+                            <strong>Errors:</strong>
+                            <ul>
+                                {% for field, errors in form.errors.items %}
+                                    {% for error in errors %}
+                                        <li>{{ field|capfirst }}: {{ error }}</li>
+                                    {% endfor %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Testimonials Section -->
+    <div class="row mt-5" style="position: relative; z-index: 2;">
+        <div class="col-12">
+            <div class="text-center mb-4">
+                <h3 class="fw-bold;">What People Are Saying</h3>
+                <p class="fw-bold text-muted">Real stories from users who’ve benefited from our services.</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card shadow border-0 rounded-4">
+                        <div class="card-body">
+                            <blockquote class="blockquote">
+                                <p>"I couldn’t have managed my weekly errands without this app. It’s been a lifesaver!"</p>
+                                <footer class="blockquote-footer">Jane Doe, 78</footer>
+                            </blockquote>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow border-0 rounded-4">
+                        <div class="card-body">
+                            <blockquote class="blockquote">
+                                <p>"As a caregiver, this app has streamlined my daily responsibilities immensely."</p>
+                                <footer class="blockquote-footer">Michael Smith, 45</footer>
+                            </blockquote>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow border-0 rounded-4">
+                        <div class="card-body">
+                            <blockquote class="blockquote">
+                                <p>"I feel so much more connected and cared for. Highly recommend this platform!"</p>
+                                <footer class="blockquote-footer">Dorothy Jenkins, 82</footer>
+                            </blockquote>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Styles for Enhanced Design -->
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        overflow-x: hidden;
+    }
+
+    .animated-bg {
+        background: linear-gradient(-90deg, #ffffff, #92a0b8, #c6edf6, #c1c8c9);
+        background-size: 400% 400%;
+        animation: gradientAnimation 10s ease infinite;
+    }
+
+    @keyframes gradientAnimation {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    .form-floating label {
+        color: #6c757d;
+    }
+
+    .form-floating .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
+    }
+
+    button:hover {
+        background-color: #0056b3 !important;
+        transform: scale(1.02);
+        transition: all 0.3s ease-in-out;
+    }
+
+    .card-header {
+        font-size: 1.5rem;
+    }
+
+
+</style>
+{% endblock %}

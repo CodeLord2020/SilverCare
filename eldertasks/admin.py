@@ -22,7 +22,7 @@ class TaskTypeAdmin(admin.ModelAdmin):
 @admin.register(TaskMedia)
 class TaskMediaAdmin(admin.ModelAdmin):
     list_display = ('task', 'media')
-    list_filter =  ('task', 'media')
+    list_filter =  ('task', 'media', 'task__elder')
     readonly_fields = ('created_at', 'updated_at')
 
 

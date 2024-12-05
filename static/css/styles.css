@@ -118,3 +118,27 @@ button {
 .icon-container i:hover {
     color: #ff9800;
 }
+
+
+.img-fluid {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 5px;
+    background-color: #f9f9f9;
+}
+
+.card {
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: scale(1.05);
+}
+
+.form-control {
+    border: 2px solid #ddd;
+    padding: 10px;
+}

@@ -264,5 +264,19 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         Add any additional context if needed.
         """
         context = super().get_context_data(**kwargs)
-        context['welcome_message'] = f"Welcome, {self.request.user.username}!"
+        context['welcome_message'] = f"Welcome, {self.request.user.first_name}!"
+        return context
+
+class Base1View(LoginRequiredMixin, TemplateView):
+    """
+    Dashboard view for authenticated users.
+    """
+    template_name = 'accounts/base1.html'
+
+    def get_context_data(self, **kwargs):
+        """
+        Add any additional context if needed.
+        """
+        context = super().get_context_data(**kwargs)
+        context['welcome_message'] = f"Welcome, {self.request.user.first_name}!"
         return context
