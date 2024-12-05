@@ -1,0 +1,120 @@
+.input-group-text {
+    background-color: #f1f1f1;  /* Light background for the icon section */
+    border-right: none;
+    padding: 0.75rem;
+}
+
+.form-control {
+    border-radius: 50px;  /* Rounded edges for the input fields */
+    padding-left: 2.5rem;  /* Space for the icon */
+}
+
+.card-body {
+    padding: 2rem;
+}
+
+.card.shadow-lg {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+button {
+    font-size: 16px;
+    border-radius: 50px;
+}
+
+
+body {
+    background-image: url('../img/sc3.jpg');
+    background-blend-mode: darken;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+
+.input-group-text {
+    background-color: #f1f1f1;  /* Light background for the icon section */
+    border-right: none;
+    padding: 0.75rem;
+}
+
+.form-control {
+    border-radius: 50px;  /* Rounded edges for the input fields */
+    padding-left: 2.5rem;  /* Space for the icon */
+}
+
+.card-body {
+    padding: 2rem;
+}
+
+.card.shadow-lg {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+button {
+    font-size: 16px;
+    border-radius: 50px;
+}
+
+.btn-outline-danger, .btn-outline-warning {
+    font-size: 16px;
+    border-radius: 50px;
+    transition: all 0.3s;
+    background-color: #d7414b;
+    color: white;
+
+}
+
+.btn-outline-info {
+    font-size: 16px;
+    border-radius: 50px;
+    transition: all 0.3s;
+    background-color: #5b9fe8;
+    color: white;
+    
+}
+    
+.btn-outline-danger:hover, .btn-outline-warning:hover {
+    background-color: #7f070f;
+    color: white;
+    transition: all 0.3s;
+}
+
+.btn-outline-info:hover, .btn-outline-warning:hover {
+    background-color: #114884;
+    color: white;
+    transition: all 0.3s;
+}
+
+
+.task-card {
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.task-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.task-card-blue {
+    border-top: 4px solid #007bff;
+    background-color: #cbe1f9;
+}
+
+.task-card-green {
+    border-top: 4px solid #28a745;
+    background-color: #c2ebcc;
+}
+
+.task-card-yellow {
+    border-top: 4px solid #ffc107;
+    background-color: #f3e6bd;
+}
+
+.icon-container i {
+    transition: color 0.3s ease-in-out;
+}
+
+.icon-container i:hover {
+    color: #ff9800;
+}

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import TaskType, Task, TaskApplication, Review, Notification
+from .models import TaskType, Task, TaskMedia, TaskApplication, Review, Notification
 
 
 @admin.register(TaskType)
@@ -18,6 +18,13 @@ class TaskTypeAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
     )
+
+@admin.register(TaskMedia)
+class TaskMediaAdmin(admin.ModelAdmin):
+    list_display = ('task', 'media')
+    list_filter =  ('task', 'media')
+    readonly_fields = ('created_at', 'updated_at')
+
 
 
 @admin.register(Task)

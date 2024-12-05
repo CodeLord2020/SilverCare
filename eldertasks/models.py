@@ -4,6 +4,7 @@ import uuid
 from django.utils.text import slugify
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.conf import settings
+from cloudinary.models import CloudinaryField
 
 class TaskType(models.Model):
     id = models.UUIDField(
@@ -135,6 +136,22 @@ class Task(models.Model):
     #     return self.is_urgent
         # return self.status in [self.Status.OPEN, self.Status.IN_PROGRESS]
 
+
+class TaskMedia(models.Model):
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='taskmedia')
+    media = CloudinaryField(
+        'image', 
+        blank=True, 
+        null=True,
+        help_text="Task picture (Max 5MB, recommended 500x500px)",
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.task.title} media resource"
+    
 
 
 class TaskApplication(models.Model):

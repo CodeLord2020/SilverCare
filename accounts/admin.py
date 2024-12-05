@@ -26,6 +26,7 @@ class UserResource(resources.ModelResource):
 
 @admin.register(User)
 class CustomUserAdmin(UserAdmin, ImportExportModelAdmin):
+    readonly_fields=('created_at', 'updated_at')
     resource_classes = UserResource
     
     list_display = (
