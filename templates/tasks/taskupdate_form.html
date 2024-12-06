@@ -30,6 +30,12 @@
                                             <small class="text-muted">Uploaded on {{ media.created_at|date:"M d, Y" }}</small>
                                         </div>
                                     </div>
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-end">
+                                            <a href="{% url 'tasks:task_media_delete' media.id %}" class="btn btn-danger btn-sm">Remove</a>
+                                        </div>
+                                    </div>
+    
                                 </div>
                             {% endfor %}
                         {% else %}
@@ -163,7 +169,7 @@
                         </div>
 
                         <!-- Submit Button -->
-                        <div class="d-grid">
+                        <div class="d-grid mb-3">
                             <button type="submit" class="btn btn-primary btn-lg shadow rounded-pill fw-bold">
                                 <i class="fas fa-paper-plane me-2"></i>Submit Task
                             </button>

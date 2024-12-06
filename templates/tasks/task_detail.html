@@ -5,11 +5,34 @@
     <div class="card my-4">
         <div class="card-body">
             <h5 class="card-title">Task Details</h5>
-            <div class="task-media">
+            <!-- <div class="task-media">
                 {% for url in media_urls %}
                     <img src="{{ url }}" alt="Task Media" class="task-media-img">
                 {% endfor %}
+            </div> -->
+            <div class="row g-3">
+                {% if medias %}
+                    {% for media in medias %}
+                        <div class="col-md-4">
+                            <div class="card shadow-sm">
+                                <img 
+                                    src="{{ media.media.url|default:'' }}" 
+                                    alt="Task Media" 
+                                    class="card-img-top img-fluid rounded" 
+                                    style="height: 200px; object-fit: contain;">
+                                <div class="card-body text-center">
+                                    <small class="text-muted">Uploaded on {{ media.created_at|date:"M d, Y" }}</small>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted text-center">No media uploaded for this task yet.</p>
+                {% endif %}
             </div>
+            <!-- Divider -->
+            <hr class="my-4">
+
             <p class="card-text"><strong>Description:</strong> {{ task.description }}</p>
             <p class="card-text"><strong>Budget:</strong> {{ task.budget }}</p>
             <p class="card-text"><strong>Status:</strong> {{ task.get_status_display }}</p>

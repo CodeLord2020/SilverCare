@@ -9,6 +9,7 @@ from .forms import TaskForm, TaskApplicationForm, ReviewForm, TaskMediaForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.core.exceptions import ValidationError
+from django.contrib import messages
 
 
 
@@ -33,7 +34,7 @@ class TaskDetailView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context["applications"] = self.object.applications.all()
         context["review_form"] = ReviewForm()  # If the task is completed, elder can leave a review
-        context["media_urls"] = [media.media.url for media in self.object.taskmedia.all()]
+        context["medias"] = [media for media in self.object.taskmedia.all()]
         return context
 
 
@@ -65,30 +66,55 @@ class TaskUpdateView(LoginRequiredMixin, UpdateView):
         context["media_form"] = TaskMediaForm()
         return context
 
+# class TaskMediaUploadView(LoginRequiredMixin, View):
+#     def post(self, request, pk, *args, **kwargs):
+#         # Fetch the task instance
+#         task = Task.objects.filter(id=pk, elder=request.user).first()
+#         if not task:
+#             return JsonResponse({"error": "Task not found or unauthorized."}, status=403)
+
+#         # Handle the uploaded files
+#         media_files = request.FILES.getlist("media")
+#         if not media_files:
+#             return JsonResponse({"error": "No files uploaded."}, status=400)
+
+#         # Validate media count
+#         if len(media_files) + task.taskmedia.count() > 3:
+#             return JsonResponse({"error": "You can upload a maximum of 3 media files."}, status=400)
+
+#         # Save each file as a new TaskMedia instance
+#         for file in media_files:
+#             TaskMedia.objects.create(task=task, media=file)
+
+#         return redirect('tasks:task_edit', pk=pk)
+
+        # return JsonResponse({"success": "Media uploaded successfully!"})
+
 class TaskMediaUploadView(LoginRequiredMixin, View):
     def post(self, request, pk, *args, **kwargs):
         # Fetch the task instance
         task = Task.objects.filter(id=pk, elder=request.user).first()
         if not task:
-            return JsonResponse({"error": "Task not found or unauthorized."}, status=403)
+            messages.error(request, "Task not found or you are not authorized to edit this task.")
+            return redirect('tasks:task_edit', pk=pk)
 
         # Handle the uploaded files
         media_files = request.FILES.getlist("media")
         if not media_files:
-            return JsonResponse({"error": "No files uploaded."}, status=400)
+            messages.error(request, "No files were uploaded. Please upload valid media files.")
+            return redirect('tasks:task_edit', pk=pk)
 
         # Validate media count
         if len(media_files) + task.taskmedia.count() > 3:
-            return JsonResponse({"error": "You can upload a maximum of 3 media files."}, status=400)
+            messages.error(request, "You can upload a maximum of 3 media files per task.")
+            return redirect('tasks:task_edit', pk=pk)
 
         # Save each file as a new TaskMedia instance
         for file in media_files:
             TaskMedia.objects.create(task=task, media=file)
 
-        return redirect('tasks:task_edit', pk=task.pk)
-
-        # return JsonResponse({"success": "Media uploaded successfully!"})
-
+        messages.success(request, "Media files uploaded successfully.")
+        return redirect('tasks:task_edit', pk=pk)
 
 # class TaskMediaUploadView(LoginRequiredMixin, View):
 #     def post(self, request, pk, *args, **kwargs):
