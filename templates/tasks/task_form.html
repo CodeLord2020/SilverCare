@@ -3,45 +3,8 @@
 {% block title %}Create Task{% endblock %}
 {% block content %}
 <div class="container py-5">
-    <!-- Animated Background -->
-    <!-- <div class="animated-bg position-absolute top-0 start-0 w-100 h-100"></div> -->
-
     <div class="row justify-content-center" style="position: relative; z-index: 2;">
-
-        <!-- Left Content: About the App -->
-        <div class="col-lg-5 col-md-6 col-sm-12 mb-5">
-            <div class="card shadow-lg border-0 rounded-4">
-                <div class="card-header bg-primary text-white text-center rounded-top-4">
-                    <h3 class="fw-bold">About Elderly Assistance</h3>
-                </div>
-                <div class="card-body p-4">
-                    <p>
-                        Our Elderly Assistance platform is designed to help seniors and their caregivers create and manage tasks seamlessly. 
-                        Whether you need help with groceries, medical appointments, or household chores, we've got you covered.
-                    </p>
-                    <p>
-                        Empower your loved ones with the support they need to stay independent, connected, and healthy.
-                    </p>
-                </div>
-            </div>
-
-            <div class="card shadow-lg border-0 mt-4 rounded-4">
-                <div class="card-header bg-dark text-white text-center rounded-top-4">
-                    <h4 class="fw-bold">Why It Matters</h4>
-                </div>
-                <div class="card-body p-4">
-                    <ul>
-                        <li class="mb-3"><strong>Independence:</strong> Help seniors maintain their independence by handling daily errands.</li>
-                        <li class="mb-3"><strong>Companionship:</strong> Encourage social interactions through task collaborations.</li>
-                        <li class="mb-3"><strong>Health:</strong> Ensure timely access to medical care and supplies.</li>
-                        <li><strong>Convenience:</strong> Simplify life for caregivers by organizing tasks effectively.</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <!-- Right Content: Form -->
-        <div class="col-lg-6 col-md-6 col-sm-12">
+        <div class="col-lg-8 col-md-10 col-sm-12">
             <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
                 <!-- Gradient Header -->
                 <div class="card-header text-center text-white p-4" style="background: linear-gradient(45deg, #1e3c72, #2a5298);">
@@ -50,8 +13,22 @@
 
                 <!-- Card Body -->
                 <div class="card-body p-5">
-                    <form method="post" novalidate>
+                    <form method="post" enctype="multipart/form-data" novalidate>
                         {% csrf_token %}
+
+                        <!-- Media Upload Field -->
+                        <div class="mb-4">
+                            <label for="id_media" class="form-label fw-bold">
+                                <i class="fas fa-image me-2"></i>Task Media
+                            </label>
+                            <input type="file" 
+                                   name="media" 
+                                   id="id_media" 
+                                   class="form-control shadow-sm rounded" 
+                                   accept="image/*" 
+                                   multiple>
+                            <div class="form-text">Task pictures (Max 5MB, recommended 500x500px).</div>
+                        </div>
 
                         <!-- Title Field -->
                         <div class="form-floating mb-4">
@@ -107,90 +84,6 @@
                 </div>
             </div>
         </div>
-
-    </div>
-
-    <!-- Testimonials Section -->
-    <div class="row mt-5" style="position: relative; z-index: 2;">
-        <div class="col-12">
-            <div class="text-center mb-4">
-                <h3 class="fw-bold;">What People Are Saying</h3>
-                <p class="fw-bold text-muted">Real stories from users who’ve benefited from our services.</p>
-            </div>
-            <div class="row g-4">
-                <div class="col-md-4">
-                    <div class="card shadow border-0 rounded-4">
-                        <div class="card-body">
-                            <blockquote class="blockquote">
-                                <p>"I couldn’t have managed my weekly errands without this app. It’s been a lifesaver!"</p>
-                                <footer class="blockquote-footer">Jane Doe, 78</footer>
-                            </blockquote>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card shadow border-0 rounded-4">
-                        <div class="card-body">
-                            <blockquote class="blockquote">
-                                <p>"As a caregiver, this app has streamlined my daily responsibilities immensely."</p>
-                                <footer class="blockquote-footer">Michael Smith, 45</footer>
-                            </blockquote>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card shadow border-0 rounded-4">
-                        <div class="card-body">
-                            <blockquote class="blockquote">
-                                <p>"I feel so much more connected and cared for. Highly recommend this platform!"</p>
-                                <footer class="blockquote-footer">Dorothy Jenkins, 82</footer>
-                            </blockquote>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
-
-<!-- Styles for Enhanced Design -->
-<style>
-    body {
-        font-family: 'Poppins', sans-serif;
-        overflow-x: hidden;
-    }
-
-    .animated-bg {
-        background: linear-gradient(-90deg, #ffffff, #92a0b8, #c6edf6, #c1c8c9);
-        background-size: 400% 400%;
-        animation: gradientAnimation 10s ease infinite;
-    }
-
-    @keyframes gradientAnimation {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-    }
-
-    .form-floating label {
-        color: #6c757d;
-    }
-
-    .form-floating .form-control:focus {
-        border-color: #007bff;
-        box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
-    }
-
-    button:hover {
-        background-color: #0056b3 !important;
-        transform: scale(1.02);
-        transition: all 0.3s ease-in-out;
-    }
-
-    .card-header {
-        font-size: 1.5rem;
-    }
-
-
-</style>
 {% endblock %}
