@@ -49,7 +49,8 @@ class TaskListView(LoginRequiredMixin, ListView):
         if search_query:
             queryset = queryset.filter(
                 Q(title__icontains=search_query) | 
-                Q(description__icontains=search_query)
+                Q(description__icontains=search_query) | 
+                Q(location__icontains=search_query) 
             )
         
         return queryset
