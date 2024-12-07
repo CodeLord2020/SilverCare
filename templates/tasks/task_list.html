@@ -1,34 +1,100 @@
+
+
+
 {% extends "base.html" %}
-{% block title %}My Tasks{% endblock %}
+{% block title %}Tasks{% endblock %}
+{% block extra_head %}
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <style>
+        .task-card {
+            transition: all 0.3s ease;
+        }
+        .task-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .filter-section {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
-    <h1 class="mb-4">My Tasks</h1>
-    <div class="list-group">
-        {% for task in tasks %}
-            <a href="{% url 'tasks:task_detail' task.id %}" class="list-group-item list-group-item-action">
-                <div class="d-flex justify-content-between">
-                    <h5 class="mb-1">{{ task.title }}</h5>
-                    <small>{{ task.get_status_display }}</small>
-                </div>
-                <p class="mb-1">{{ task.description|truncatewords:20 }}</p>
-                <small>Created: {{ task.created_at|date:"M d, Y" }}</small>
-            </a>
-        {% endfor %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4">Task Explorer</h1>
+            
+            <!-- Filter Section -->
+            <div class="filter-section">
+                <form 
+                    hx-get="{% url 'tasks:task_list' %}" 
+                    hx-target="#tasks-container"
+                    hx-push-url="true"
+                    class="row g-3 align-items-center"
+                >
+                    <!-- Task Type Filter -->
+                    <div class="col-md-3">
+                        <select name="task_type" class="form-select" onchange="this.form.requestSubmit()">
+                            <option value="">All Task Types</option>
+                            {% for type in task_types %}
+                                <option 
+                                    value="{{ type.id }}"
+                                    {% if current_task_type == type.id|stringformat:'s' %}selected{% endif %}
+                                >
+                                    {{ type.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Search Input -->
+                    <div class="col-md-4">
+                        <input 
+                            type="search" 
+                            name="search" 
+                            class="form-control" 
+                            placeholder="Search tasks..." 
+                            value="{{ search_query }}"
+                            hx-trigger="keyup changed delay:500ms"
+                        >
+                    </div>
+
+                    <!-- My Tasks Toggle -->
+                    <div class="col-md-3">
+                        <div class="form-check">
+                            <input 
+                                type="checkbox" 
+                                name="my_tasks" 
+                                value="true" 
+                                class="form-check-input" 
+                                id="myTasksCheck"
+                                {% if show_my_tasks %}checked{% endif %}
+                                onchange="this.form.requestSubmit()"
+                            >
+                            <label class="form-check-label" for="myTasksCheck">
+                                My Tasks Only
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Create Task Button -->
+                    <div class="col-md-2">
+                        <a href="{% url 'tasks:task_create' %}" class="btn btn-primary w-100">
+                            <i class="fas fa-plus"></i> Create Task
+                        </a>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Tasks Container -->
+            <div id="tasks-container">
+                {% include "tasks/task_list_partial.html" %}
+            </div>
+        </div>
     </div>
-    <nav class="mt-4">
-        <ul class="pagination">
-            {% if tasks.has_previous %}
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ tasks.previous_page_number }}">Previous</a>
-                </li>
-            {% endif %}
-            <li class="page-item active">
-                <span class="page-link">{{ tasks.number }}</span>
-            </li>
-            {% if tasks.has_next %}
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ tasks.next_page_number }}">Next</a>
-                </li>
-            {% endif %}
-        </ul>
-    </nav>
+</div>
 {% endblock %}
