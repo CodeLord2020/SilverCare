@@ -1,10 +1,10 @@
 from django.shortcuts import render
 # Create your views here.
 from django.shortcuts import get_object_or_404, redirect
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Task, TaskApplication, Review, TaskMedia
+from .models import Task, TaskApplication, Review, TaskMedia, TaskType
 from .forms import TaskForm, TaskApplicationForm, ReviewForm, TaskMediaForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
@@ -14,6 +14,17 @@ from django.contrib import messages
 
 
 # Task List View (Elder View - Only their tasks)
+# class TaskListView(LoginRequiredMixin, ListView):
+#     model = Task
+#     template_name = "tasks/task_list.html"
+#     context_object_name = "tasks"
+#     paginate_by = 10
+
+#     def get_queryset(self):
+#         return Task.objects.filter(elder=self.request.user).order_by("-created_at")
+
+from django.db.models import Q
+
 class TaskListView(LoginRequiredMixin, ListView):
     model = Task
     template_name = "tasks/task_list.html"
@@ -21,7 +32,42 @@ class TaskListView(LoginRequiredMixin, ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        return Task.objects.filter(elder=self.request.user).order_by("-created_at")
+        queryset = Task.objects.all().order_by("-created_at")
+        
+        # Filter by task type if provided
+        task_type = self.request.GET.get('task_type')
+        if task_type:
+            queryset = queryset.filter(task_type__id=task_type)
+        
+        # Filter by owner if requested
+        show_my_tasks = self.request.GET.get('my_tasks') == 'true'
+        if show_my_tasks:
+            queryset = queryset.filter(elder=self.request.user)
+        
+        # Search functionality
+        search_query = self.request.GET.get('search')
+        if search_query:
+            queryset = queryset.filter(
+                Q(title__icontains=search_query) | 
+                Q(description__icontains=search_query)
+            )
+        
+        return queryset
+    
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        # Add task types for filtering
+        context['task_types'] = TaskType.objects.filter(is_active=True)
+        
+        # Preserve filter parameters
+        context['current_task_type'] = self.request.GET.get('task_type', '')
+        context['show_my_tasks'] = self.request.GET.get('my_tasks') == 'true'
+        context['search_query'] = self.request.GET.get('search', '')
+        
+        return context
+    
 
 
 # Task Detail View (Includes Applications)
@@ -38,15 +84,48 @@ class TaskDetailView(LoginRequiredMixin, DetailView):
         return context
 
 
-# Task Create View (Elder Creates Task)
+
 class TaskCreateView(LoginRequiredMixin, CreateView):
     model = Task
     template_name = "tasks/task_form.html"
     form_class = TaskForm
+    success_url = reverse_lazy('tasks:task_list')  # Adjust to your desired redirect
 
     def form_valid(self, form):
         form.instance.elder = self.request.user
+        
+        # Save the task first
+        self.object = form.save()
+        
+        # Handle media upload
+        if 'media' in self.request.FILES:
+            media_files = self.request.FILES.getlist('media')
+            for media_file in media_files:
+                TaskMedia.objects.create(
+                    task=self.object,
+                    media=media_file
+                )
+        
         return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['media_form'] = TaskMediaForm()  # Add media upload form to context
+        return context
+    
+
+# class TaskCreateView(LoginRequiredMixin, CreateView):
+#     model = Task
+#     template_name = "tasks/task_form.html"
+#     form_class = TaskForm
+
+#     def form_valid(self, form):
+#         form.instance.elder = self.request.user
+#         return super().form_valid(form)
+    
+#     def get_success_url(self):
+#         # This allows for media upload after task creation
+#         return reverse('tasks:task_media_upload_create')
     
 
 class TaskUpdateView(LoginRequiredMixin, UpdateView):
@@ -89,6 +168,22 @@ class TaskUpdateView(LoginRequiredMixin, UpdateView):
 #         return redirect('tasks:task_edit', pk=pk)
 
         # return JsonResponse({"success": "Media uploaded successfully!"})
+
+class TaskMediaUploadCreateView(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        # Get the most recently created task by the current user
+        task = Task.objects.filter(elder=request.user).order_by('-created_at').first()
+        
+        if task and 'media' in request.FILES:
+            media_files = request.FILES.getlist('media')
+            for media_file in media_files:
+                TaskMedia.objects.create(
+                    task=task,
+                    media=media_file
+                )
+        
+        return redirect('tasks:task_detail', pk=task.pk)
+
 
 class TaskMediaUploadView(LoginRequiredMixin, View):
     def post(self, request, pk, *args, **kwargs):
