@@ -77,4 +77,19 @@ class PasswordResetService:
         # Full URL 
         full_reset_link = f"{settings.SITE_DOMAIN}{reset_link}"
         subject = "Password Reset Request"
+        sender = settings.EMAIL_HOST_USER
+        recipients = [user.email]
+        context = {
+            'full_name' : user.first_name,
+            'user_email': user.email,
+            'reset_link': full_reset_link,
+        }
+        message = render_to_string('password_reset_email.html', context)
+        html_message = render_to_string('password_reset_email.html',context)
+
+        send_mail(subject=subject ,
+                   message=message,
+                   from_email=sender,
+                   recipient_list=recipients,
+                   html_message=html_message)
         

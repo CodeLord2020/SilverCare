@@ -7,20 +7,26 @@ from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from eldertasks.models import Notification
 from django.contrib.auth import views as auth_views
+from django.contrib.auth import update_session_auth_hash
 from django.views.generic import CreateView, View
 from django.utils.encoding import force_str, force_bytes
 from django .utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.contrib import messages
+from django.core.mail import send_mail
+from django.conf import settings
 from django.contrib.auth.tokens import default_token_generator
 from django.urls import path
-from .utils import AccountVerificationService
+from django.template import engines
+from .utils import AccountVerificationService, PasswordResetService
 from django.contrib import auth
 from .models import User
 from .forms import (
     CustomUserCreationForm, 
     CustomAuthenticationForm, 
     CustomSetPasswordForm,
-    ForgotPasswordForm
+    ForgotPasswordForm,
+    ChangePasswordForm,
+    ContactUsForm
 )
 
 class UserRegistrationView(CreateView):
@@ -139,7 +145,7 @@ class ForgotPasswordView(View):
     """
     View to handle forgotten password requests.
     """
-    template_name = 'forgot_password.html'
+    template_name = 'accounts/forgot_password.html'
     form_class = ForgotPasswordForm
 
     def get(self, request):
@@ -158,17 +164,7 @@ class ForgotPasswordView(View):
             email = form.cleaned_data['email']
             user = User.objects.filter(email=email).first()
             if user:
-                # Generate password reset token and UID
-                token = default_token_generator.make_token(user)
-                uid = urlsafe_base64_encode(force_bytes(user.pk))
-
-                # Generate reset link
-                reset_link = request.build_absolute_uri(
-                    reverse('password_reset_confirm', kwargs={'uidb64': uid, 'token': token})
-                )
-
-                # Send reset email
-                self.send_password_reset_email(email, reset_link)
+                PasswordResetService.send_password_reset_email(user=user)
 
                 messages.success(
                     request, "An email has been sent to reset your password. Please check your inbox."
@@ -194,7 +190,7 @@ class PasswordResetConfirmView(View):
             if default_token_generator.check_token(user, token):
                 # Render password reset form
                 form = CustomSetPasswordForm(user)
-                return render(request, 'password_reset_confirm.html', {
+                return render(request, 'accounts/password_reset_confirm.html', {
                     'form': form,
                     'uidb64': uidb64,
                     'token': token
@@ -231,7 +227,7 @@ class PasswordResetConfirmView(View):
                     )
                     return redirect('login')
                 else:
-                    return render(request, 'password_reset_confirm.html', {
+                    return render(request, 'accounts/password_reset_confirm.html', {
                         'form': form,
                         'uidb64': uidb64,
                         'token': token
@@ -250,7 +246,33 @@ class PasswordResetConfirmView(View):
         return redirect('login')
     
 
+class ChangePasswordView(LoginRequiredMixin, View):
+    """
+    View to handle changing the user's password.
+    """
+    template_name = 'accounts/change_password.html'
+    form_class = ChangePasswordForm
 
+    def get(self, request):
+        """
+        Render the change password form.
+        """
+        form = self.form_class(user=request.user)
+        return render(request, self.template_name, {'form': form})
+    
+    def post(self, request):
+        """
+        Handle the password change process.
+        """
+        form = self.form_class(user=request.user, data=request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Keeps the user logged in
+            messages.success(request, "Your password was successfully updated!")
+            return redirect('dashboard')  # Redirect to a desired page after success
+        else:
+            messages.error(request, "Please correct the error below.")
+        return render(request, self.template_name, {'form': form})
 
 
 class DashboardView(LoginRequiredMixin, TemplateView):
@@ -280,3 +302,66 @@ class Base1View(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         context['welcome_message'] = f"Welcome, {self.request.user.first_name}!"
         return context
+    
+
+class TestMail(LoginRequiredMixin, TemplateView):
+    """
+    Dashboard view for authenticated users.
+    """
+    template_name = 'accounts/testmail.html'
+
+    def get_context_data(self, **kwargs):
+        """
+        Add any additional context if needed.
+        """
+        context = super().get_context_data(**kwargs)
+        context = {
+            'full_name' : 'Rasheed',
+            'user_email': 'brashed@gmaai.com',
+            'verification_url': 'http://127.0.0.1:5000/test-mail/',
+             'uidb64': 'hjjdjij',
+             'token': 'jdshi874808bnw97ywu893yrrhi9'
+        }
+        context['welcome_message'] = f"Welcome, {self.request.user.first_name}!"
+        return context
+    
+
+
+
+class ContactUsView(View):
+    template_name = 'contact_us.html'
+    form_class = ContactUsForm
+
+    def get(self, request):
+        form = self.form_class()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            email = form.cleaned_data['email']
+            message = form.cleaned_data['message']
+            
+            # Render the email template
+            django_engine = engines['django']
+            email_content = django_engine.get_template('contact_us_email.html').render({
+                'name': name,
+                'email': email,
+                'message': message,
+            })
+
+            # Send the email
+            send_mail(
+                subject=f"New Contact Us Message from {name}",
+                message="This is an HTML email. Please view it as such.",
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=['brasheed123@gmail.com'],
+                html_message=email_content,
+                fail_silently=False,
+            )
+            
+            messages.success(request, "Your message has been sent successfully!")
+            return redirect('contact-us')
+
+        return render(request, self.template_name, {'form': form})

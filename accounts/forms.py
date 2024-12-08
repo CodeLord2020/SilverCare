@@ -1,4 +1,4 @@
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordResetForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordResetForm, PasswordChangeForm
 from .models import User
 from django import forms
 from django.urls import reverse
@@ -129,4 +129,44 @@ class ForgotPasswordForm(forms.Form):
         label="Email Address",
         max_length=254,
         widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Enter your email'}),
+    )
+
+
+
+class ChangePasswordForm(PasswordChangeForm):
+    """
+    Custom form for changing the user's password.
+    """
+    old_password = forms.CharField(
+        label="Old Password",
+        strip=False,
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Enter old password'}),
+    )
+    new_password1 = forms.CharField(
+        label="New Password",
+        strip=False,
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Enter new password'}),
+        help_text="Your password must be strong and meet the complexity requirements.",
+    )
+    new_password2 = forms.CharField(
+        label="Confirm New Password",
+        strip=False,
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Confirm new password'}),
+    )
+
+
+
+class ContactUsForm(forms.Form):
+    name = forms.CharField(
+        label="Your Name",
+        max_length=100,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your name'}),
+    )
+    email = forms.EmailField(
+        label="Your Email",
+        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Enter your email'}),
+    )
+    message = forms.CharField(
+        label="Message",
+        widget=forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Write your message here'}),
     )

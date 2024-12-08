@@ -16,13 +16,30 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from accounts.views import DashboardView, Base1View
+from accounts.views import DashboardView, Base1View, TestMail, ContactUsView
+
+
+from django.views.generic import TemplateView
+
+class PrivacyPolicyView(TemplateView):
+    template_name = 'privacy_policy.html'
+
+class TermsOfServiceView(TemplateView):
+    template_name = 'terms_of_service.html'
+
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('', DashboardView.as_view(), name='home'),
     path('base1/', Base1View.as_view(), name='base1'),
+    path('test-mail/', TestMail.as_view(), name='testmail'),
     path('accounts/', include('accounts.urls')),
     path('tasks/', include('eldertasks.urls')),
+
+
+
+    path('privacy-policy/', PrivacyPolicyView.as_view(), name='privacy-policy'),
+    path('terms-of-service/', TermsOfServiceView.as_view(), name='terms-of-service'),
+    path('contact-us/', ContactUsView.as_view(), name='contact-us'),
 
 ]
