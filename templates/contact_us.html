@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+{% block title %}Contact Us{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <h1 class="text-center text-primary mb-4">Contact Us</h1>
+            <p class="text-center text-muted mb-5">
+                We'd love to hear from you! Please fill out the form below, and we’ll get back to you as soon as possible.
+            </p>
+
+            <form method="post" class="p-4 shadow rounded-2 bg-light">
+                {% csrf_token %}
+                <div class="form-group mb-3">
+                    <label for="id_name" class="form-label fw-bold">Your Name</label>
+                    {{ form.name|add_class:"form-control" }}
+                </div>
+                <div class="form-group mb-3">
+                    <label for="id_email" class="form-label fw-bold">Your Email</label>
+                    {{ form.email|add_class:"form-control" }}
+                </div>
+                <div class="form-group mb-3">
+                    <label for="id_message" class="form-label fw-bold">Message</label>
+                    {{ form.message|add_class:"form-control" }}
+                </div>
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary btn-lg">Send Message</button>
+                </div>
+            </form>
+
+            {% if form.errors %}
+                <div class="alert alert-danger mt-4">
+                    <h5 class="alert-heading">Please fix the following errors:</h5>
+                    <ul>
+                        {% for field, errors in form.errors.items %}
+                            {% for error in errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

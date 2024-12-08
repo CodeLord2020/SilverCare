@@ -1,59 +1,182 @@
 {% extends "base.html" %}
-{% block title %}Task Details{% endblock %}
+{% block title %}{{ task.title }}{% endblock %}
 {% block content %}
-    <h1>{{ task.title }}</h1>
-    <div class="card my-4">
-        <div class="card-body">
-            <h5 class="card-title">Task Details</h5>
-            <!-- <div class="task-media">
-                {% for url in media_urls %}
-                    <img src="{{ url }}" alt="Task Media" class="task-media-img">
-                {% endfor %}
-            </div> -->
-            <div class="row g-3">
-                {% if medias %}
-                    {% for media in medias %}
-                        <div class="col-md-4">
-                            <div class="card shadow-sm">
+<div class="container py-5">
+    <div class="row">
+        <!-- Task Media Carousel -->
+        <div class="col-lg-6 mb-4">
+            <div id="taskMediaCarousel" class="carousel slide shadow-lg rounded-4 overflow-hidden" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    {% if medias %}
+                        {% for media in medias %}
+                            <div class="carousel-item {% if forloop.first %}active{% endif %}">
                                 <img 
-                                    src="{{ media.media.url|default:'' }}" 
-                                    alt="Task Media" 
-                                    class="card-img-top img-fluid rounded" 
-                                    style="height: 200px; object-fit: contain;">
-                                <div class="card-body text-center">
-                                    <small class="text-muted">Uploaded on {{ media.created_at|date:"M d, Y" }}</small>
-                                </div>
+                                    src="{{ media.media.url }}" 
+                                    class="d-block w-100" 
+                                    alt="Task Media {{ forloop.counter }}"
+                                    style="height: 400px; object-fit: cover;"
+                                >
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="carousel-item active">
+                            <div class="d-flex justify-content-center align-items-center bg-light" style="height: 400px;">
+                                <p class="text-muted">No media uploaded</p>
                             </div>
                         </div>
-                    {% endfor %}
-                {% else %}
-                    <p class="text-muted text-center">No media uploaded for this task yet.</p>
+                    {% endif %}
+                </div>
+                {% if medias|length > 1 %}
+                    <button class="carousel-control-prev" type="button" data-bs-target="#taskMediaCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#taskMediaCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
                 {% endif %}
             </div>
-            <!-- Divider -->
-            <hr class="my-4">
+        </div>
 
-            <p class="card-text"><strong>Description:</strong> {{ task.description }}</p>
-            <p class="card-text"><strong>Budget:</strong> {{ task.budget }}</p>
-            <p class="card-text"><strong>Status:</strong> {{ task.get_status_display }}</p>
-            <p class="card-text"><strong>Location':</strong> {{ task.location }}</p>
+        <!-- Task Details -->
+        <div class="col-lg-6">
+            <div class="card border-0 h-100">
+                <div class="card-header bg-primary text-white rounded-top-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h2 class="mb-0">{{ task.title }}</h2>
+                        {% if user.is_authenticated and user == task.elder %}
+                            <div class="btn-group">
+                                <a href="{% url 'tasks:task_edit' task.id %}" class="btn btn-light btn-sm">
+                                    <i class="fas fa-edit me-1"></i>Edit
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3 mb-4">
+                        <div class="col-6">
+                            <div class="bg-light p-3 rounded">
+                                <h6 class="text-muted mb-2">Budget</h6>
+                                <p class="h5 mb-0">
+                                    <i class="fas fa-dollar-sign me-2 text-success"></i>
+                                    {{ task.budget }}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="bg-light p-3 rounded">
+                                <h6 class="text-muted mb-2">Status</h6>
+                                <p class="h5 mb-0">
+                                    <span class="badge 
+                                        {% if task.status == 'Open' %}bg-success
+                                        {% elif task.status == 'In Progress' %}bg-warning
+                                        {% elif task.status == 'Completed' %}bg-info
+                                        {% else %}bg-secondary{% endif %}
+                                    ">
+                                        {{ task.get_status_display }}
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5 class="mb-3">Description</h5>
+                        <p class="text-muted">{{ task.description }}</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5 class="mb-3">Location</h5>
+                        <p>
+                            <i class="fas fa-map-marker-alt me-2 text-danger"></i>
+                            {{ task.location }}
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    <h4>Applications</h4>
-    <ul class="list-group">
-        {% for application in applications %}
-            <li class="list-group-item">
-                {{ application.helper.name }} - {{ application.get_status_display }}
-            </li>
-        {% endfor %}
-    </ul>
 
+    <!-- Applications Section -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-secondary text-white">
+                    <h3 class="mb-0">Task Applications</h3>
+                </div>
+                <div class="card-body p-0">
+                    {% if applications %}
+                        <div class="list-group list-group-flush">
+                            {% for application in applications %}
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-1">{{ application.helper.name }}</h6>
+                                        <span class="badge 
+                                            {% if application.status == 'Pending' %}bg-warning
+                                            {% elif application.status == 'Accepted' %}bg-success
+                                            {% elif application.status == 'Rejected' %}bg-danger
+                                            {% else %}bg-secondary{% endif %}
+                                        ">
+                                            {{ application.get_status_display }}
+                                        </span>
+                                    </div>
+                                    {% if user.is_authenticated and user == task.elder %}
+                                        <div class="btn-group">
+                                            <a href="#" class="btn btn-sm btn-outline-primary">View Profile</a>
+                                            <a href="#" class="btn btn-sm btn-outline-success">Accept</a>
+                                            <a href="#" class="btn btn-sm btn-outline-danger">Reject</a>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <p class="text-muted mb-0">No applications yet</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Review Section -->
     {% if task.status == "Completed" %}
-        <h4 class="mt-4">Leave a Review</h4>
-        <form method="post" action="{% url 'tasks:task_review' task.id %}">
-            {% csrf_token %}
-            {{ review_form.as_p }}
-            <button type="submit" class="btn btn-primary mt-2">Submit Review</button>
-        </form>
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-info text-white">
+                        <h3 class="mb-0">Leave a Review</h3>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" action="{% url 'tasks:task_review' task.id %}">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                {{ review_form.rating.label_tag }}
+                                {{ review_form.rating }}
+                            </div>
+                            <div class="mb-3">
+                                {{ review_form.comment.label_tag }}
+                                {{ review_form.comment }}
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit Review</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     {% endif %}
+</div>
+
+<style>
+    body {
+        background-color: #f4f6f9;
+    }
+    .card-header {
+        border-top-left-radius: 1rem !important;
+        border-top-right-radius: 1rem !important;
+    }
+</style>
 {% endblock %}

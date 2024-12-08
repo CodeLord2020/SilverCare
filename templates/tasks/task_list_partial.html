@@ -1,101 +1,269 @@
 
-<div class="container py-4">
+<div class="container-fluid task-list-container py-5">
     <div class="row">
-        {% if tasks %}
-            {% for task in tasks %}
-                <div class="col-md-4 mb-4">
-                    <div class="card task-card">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <h5 class="card-title mb-0">{{ task.title }}</h5>
-                                <span class="badge 
-                                    {% if task.status == 'Open' %}bg-primary
-                                    {% elif task.status == 'In Progress' %}bg-warning
-                                    {% elif task.status == 'Completed' %}bg-success
-                                    {% else %}bg-secondary{% endif %}">
-                                    {{ task.get_status_display }}
-                                </span>
-                            </div>
-                            <p class="card-text text-muted">
-                                {{ task.description|truncatewords:15 }}
-                            </p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <small class="text-muted">
-                                    Created: {{ task.created_at|date:"M d, Y" }}
-                                </small>
-                                <div class="btn-group" role="group">
-                                    <a href="{% url 'tasks:task_detail' task.id %}" class="btn btn-sm btn-outline-primary">
-                                        View Details
-                                    </a>
-                                    {% if user == task.elder %}
-                                        <a href="{% url 'tasks:task_edit' task.id %}" class="btn btn-sm btn-outline-secondary">
-                                            <i class="fas fa-edit me-1"></i>Edit
-                                        </a>
+        <div class="col-12 text-center mb-5">
+            <h1 class="display-4 fw-bold text-gradient">Your Care Tasks</h1>
+            <p class="lead text-muted">Empowering care, one task at a time</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            {% if tasks %}
+                {% for task in tasks %}
+                    <div class="col-md-4 mb-4">
+                        <div class="task-card card border-0 shadow-lg hover-lift">
+                            <!-- Gradient Overlay -->
+                            <div class="card-overlay"></div>
+                            
+                            <!-- Task Media Preview -->
+                            {% if task.taskmedia.exists %}
+                                <div class="task-media-preview">
+                                    <img 
+                                        src="{{ task.taskmedia.first.media.url }}" 
+                                        alt="{{ task.title }}" 
+                                        class="img-fluid task-media-img"
+                                    >
+                                    {% if task.taskmedia.count > 1 %}
+                                        <div class="media-count-badge">
+                                            +{{ task.taskmedia.count|add:"-1" }}
+                                        </div>
                                     {% endif %}
                                 </div>
-                            </div>
-                            {% if task.taskmedia.exists %}
-                                <div class="mt-2">
-                                    <small class="text-muted">
-                                        <i class="fas fa-image"></i> {{ task.taskmedia.count }} media attached
-                                    </small>
+                            {% else %}
+                                <div class="task-media-placeholder">
+                                    <i class="fas fa-tasks"></i>
                                 </div>
                             {% endif %}
+
+                            <div class="card-body position-relative">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5 class="card-title mb-0 fw-bold">{{ task.title }}</h5>
+                                    <span class="badge 
+                                        {% if task.status == 'Open' %}badge-primary-soft
+                                        {% elif task.status == 'In Progress' %}badge-warning-soft
+                                        {% elif task.status == 'Completed' %}badge-success-soft
+                                        {% else %}badge-secondary-soft{% endif %} 
+                                        px-3 py-2 rounded-pill">
+                                        {{ task.get_status_display }}
+                                    </span>
+                                </div>
+
+                                <p class="card-text text-muted mb-3">
+                                    {{ task.description|truncatewords:15 }}
+                                </p>
+
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="task-meta">
+                                        <small class="text-muted d-block">
+                                            <i class="fas fa-calendar-alt me-2"></i>
+                                            Created: {{ task.created_at|date:"M d, Y" }}
+                                        </small>
+                                        {% if task.budget %}
+                                            <small class="text-muted d-block">
+                                                <i class="fas fa-dollar-sign me-2"></i>
+                                                Budget: ${{ task.budget }}
+                                            </small>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="task-actions">
+                                        <a href="{% url 'tasks:task_detail' task.id %}" 
+                                           class="btn btn-primary btn-icon rounded-circle">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        {% if user == task.elder %}
+                                            <a href="{% url 'tasks:task_edit' task.id %}" 
+                                               class="btn btn-secondary btn-icon rounded-circle ms-2">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            {% endfor %}
+                {% endfor %}
 
-            <!-- Pagination -->
-            <div class="col-12">
-                <nav aria-label="Page navigation">
-                    <ul class="pagination justify-content-center">
-                        {% if page_obj.has_previous %}
-                            <li class="page-item">
-                                <a 
-                                    class="page-link" 
-                                    href="?page={{ page_obj.previous_page_number }}&task_type={{ request.GET.task_type }}&my_tasks={{ request.GET.my_tasks }}&search={{ request.GET.search }}"
-                                    hx-get="{% url 'tasks:task_list' %}?page={{ page_obj.previous_page_number }}&task_type={{ request.GET.task_type }}&my_tasks={{ request.GET.my_tasks }}&search={{ request.GET.search }}"
-                                    hx-target="#tasks-container"
-                                >
-                                    Previous
-                                </a>
+                <!-- Pagination -->
+                <div class="col-12">
+                    <nav aria-label="Page navigation" class="mt-4">
+                        <ul class="pagination justify-content-center">
+                            {% if page_obj.has_previous %}
+                                <li class="page-item">
+                                    <a 
+                                        class="page-link" 
+                                        href="?page={{ page_obj.previous_page_number }}&task_type={{ request.GET.task_type }}&my_tasks={{ request.GET.my_tasks }}&search={{ request.GET.search }}"
+                                        hx-get="{% url 'tasks:task_list' %}?page={{ page_obj.previous_page_number }}&task_type={{ request.GET.task_type }}&my_tasks={{ request.GET.my_tasks }}&search={{ request.GET.search }}"
+                                        hx-target="#tasks-container"
+                                    >
+                                        <i class="fas fa-chevron-left me-2"></i>Previous
+                                    </a>
+                                </li>
+                            {% endif %}
+
+                            <li class="page-item active">
+                                <span class="page-link">
+                                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                                </span>
                             </li>
-                        {% endif %}
 
-                        <li class="page-item active">
-                            <span class="page-link">
-                                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
-                            </span>
-                        </li>
-
-                        {% if page_obj.has_next %}
-                            <li class="page-item">
-                                <a 
-                                    class="page-link" 
-                                    href="?page={{ page_obj.next_page_number }}&task_type={{ request.GET.task_type }}&my_tasks={{ request.GET.my_tasks }}&search={{ request.GET.search }}"
-                                    hx-get="{% url 'tasks:task_list' %}?page={{ page_obj.next_page_number }}&task_type={{ request.GET.task_type }}&my_tasks={{ request.GET.my_tasks }}&search={{ request.GET.search }}"
-                                    hx-target="#tasks-container"
-                                >
-                                    Next
-                                </a>
-                            </li>
-                        {% endif %}
-                    </ul>
-                </nav>
-            </div>
-        {% else %}
-            <div class="col-12">
-                <div class="alert alert-info text-center">
-                    No tasks found. 
-                    {% if show_my_tasks %}
-                        You haven't created any tasks yet.
-                    {% else %}
-                        No tasks match your current filters.
-                    {% endif %}
-                    <a href="{% url 'tasks:task_create' %}" class="btn btn-primary btn-sm ms-2">Create a Task</a>
+                            {% if page_obj.has_next %}
+                                <li class="page-item">
+                                    <a 
+                                        class="page-link" 
+                                        href="?page={{ page_obj.next_page_number }}&task_type={{ request.GET.task_type }}&my_tasks={{ request.GET.my_tasks }}&search={{ request.GET.search }}"
+                                        hx-get="{% url 'tasks:task_list' %}?page={{ page_obj.next_page_number }}&task_type={{ request.GET.task_type }}&my_tasks={{ request.GET.my_tasks }}&search={{ request.GET.search }}"
+                                        hx-target="#tasks-container"
+                                    >
+                                        Next<i class="fas fa-chevron-right ms-2"></i>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
                 </div>
-            </div>
-        {% endif %}
+            {% else %}
+                <div class="col-12">
+                    <div class="empty-state text-center p-5">
+                        <i class="fas fa-clipboard-list display-4 text-muted mb-4"></i>
+                        <h2 class="mb-3">No Tasks Yet</h2>
+                        <p class="lead text-muted mb-4">
+                            {% if show_my_tasks %}
+                                You haven't created any tasks. Start helping someone today!
+                            {% else %}
+                                No tasks match your current filters.
+                            {% endif %}
+                        </p>
+                        <a href="{% url 'tasks:task_create' %}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-plus me-2"></i>Create a Task
+                        </a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
     </div>
 </div>
+
+<style>
+    :root {
+        --primary-gradient-start: #6a11cb;
+        --primary-gradient-end: #2575fc;
+        --secondary-color: #6c757d;
+    }
+
+    body {
+        background-color: #f4f7fc;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .text-gradient {
+        background: linear-gradient(45deg, var(--primary-gradient-start), var(--primary-gradient-end));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .task-list-container {
+        background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(237,242,250,0.9));
+    }
+
+    .task-card {
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        border-radius: 15px;
+    }
+
+    .task-card .card-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(37,117,252,0.1), rgba(106,17,203,0.1));
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .task-card:hover .card-overlay {
+        opacity: 1;
+    }
+
+    .hover-lift {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .hover-lift:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 30px rgba(0,0,0,0.1);
+    }
+
+    .task-media-preview {
+        position: relative;
+        height: 220px;
+        overflow: hidden;
+    }
+
+    .task-media-preview .task-media-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .task-media-placeholder {
+        height: 220px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(45deg, var(--primary-gradient-start), var(--primary-gradient-end));
+        color: white;
+        font-size: 4rem;
+        opacity: 0.7;
+    }
+
+    .media-count-badge {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        background-color: rgba(0,0,0,0.6);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 20px;
+    }
+
+    .badge-primary-soft {
+        background-color: rgba(0, 123, 255, 0.1);
+        color: #007bff;
+    }
+
+    .badge-warning-soft {
+        background-color: rgba(255, 193, 7, 0.1);
+        color: #ffc107;
+    }
+
+    .badge-success-soft {
+        background-color: rgba(40, 167, 69, 0.1);
+        color: #28a745;
+    }
+
+    .badge-secondary-soft {
+        background-color: rgba(108, 117, 125, 0.1);
+        color: #6c757d;
+    }
+
+    .btn-icon {
+        width: 40px;
+        height: 40px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+    }
+
+    .empty-state {
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        padding: 3rem;
+    }
+</style>

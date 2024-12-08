@@ -3,85 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to IDEA REVIEW</title>
+    <title>Welcome to SILVERCARE</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Georgia', serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f9;
+            background-color: #f9f9f9;
+            color: #333333;
         }
         .email-container {
             max-width: 600px;
             margin: 20px auto;
             background: #ffffff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
         }
         .header {
-            text-align: center;
-            padding: 10px 0;
-            background-color: #0078d7;
+            background: linear-gradient(90deg, #0f9b0f, #00b09b);
             color: #ffffff;
-            border-radius: 8px 8px 0 0;
+            padding: 20px 10px;
+            text-align: center;
         }
         .header h1 {
             margin: 0;
-            font-size: 24px;
+            font-size: 28px;
+            font-weight: bold;
         }
         .body {
             padding: 20px;
-            color: #333333;
-            line-height: 1.6;
         }
         .body p {
-            margin: 0 0 20px;
+            font-size: 16px;
+            line-height: 1.8;
+            margin: 10px 0;
+        }
+        .highlight {
+            color: #00b09b;
+            font-weight: bold;
         }
         .button {
             text-align: center;
             margin: 20px 0;
         }
         .button a {
-            background-color: #0078d7;
+            background-color: #00b09b;
             color: #ffffff;
-            padding: 12px 20px;
+            padding: 12px 25px;
             text-decoration: none;
-            border-radius: 5px;
+            border-radius: 25px;
             font-size: 16px;
-            display: inline-block;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+            transition: background-color 0.3s ease;
         }
         .button a:hover {
-            background-color: #005bb5;
+            background-color: #00857a;
         }
         .footer {
+            background: #f1f1f1;
             text-align: center;
-            margin-top: 20px;
+            padding: 10px 20px;
             font-size: 12px;
-            color: #666666;
+            color: #777777;
+        }
+        .footer p {
+            margin: 5px 0;
         }
     </style>
 </head>
 <body>
     <div class="email-container">
         <div class="header">
-            <h1>Welcome to IDEA REVIEW</h1>
+            <h1>Welcome to SILVERCARE</h1>
         </div>
         <div class="body">
-            <p>Hi {{ full_name }},</p>
-            <p>Thank you for joining <strong>IDEA REVIEW</strong>! We're thrilled to have you onboard. This platform connects mentees with mentors to review and develop groundbreaking ideas.</p>
-            <p>To get started, we need you to verify your email address. Simply click the button below:</p>
+            <p>Dear <span class="highlight">{{ full_name }}</span>,</p>
+            <p>Welcome to <strong>SILVERCARE</strong>, where care meets technology. We are dedicated to providing a platform that bridges the gap between elderly individuals and their caregivers, ensuring safety, connection, and a better quality of life.</p>
+            <p>To begin your journey with us, please confirm your email address by clicking the button below:</p>
             <div class="button">
-                <a href="{{ verification_url }}" target="_blank">Verify My Account</a>
+                <a href="{{ verification_url }}" target="_blank">Verify My Email</a>
             </div>
-            <p>If the button above doesn't work, copy and paste the following link into your browser:</p>
-            <p><a href="{{ verification_url }}">{{ verification_url }}</a></p>
-            <p>Once your account is verified, you can log in and start proposing your amazing ideas to mentors in your field of interest!</p>
-            <p>Cheers,<br>The IDEA REVIEW Team</p>
+            <p>If the button above doesn't work, simply copy and paste the following link into your browser:</p>
+            <p><a href="{{ verification_url }}" style="color: #00b09b; text-decoration: none;">{{ verification_url }}</a></p>
+            <p>Once verified, you can access personalized services and resources designed to support you or your loved ones.</p>
+            <p>Thank you for trusting us to be a part of your care journey.</p>
+            <p>Warm regards,<br>The <strong>SILVERCARE</strong> Team</p>
         </div>
         <div class="footer">
-            <p>If you didn't sign up for IDEA REVIEW, please ignore this email or contact support.</p>
-            <p>&copy; 2024 IDEA REVIEW. All rights reserved.</p>
+            <p>If you did not sign up for SILVERCARE, please disregard this email or contact us at support@silvercare.com.</p>
+            <p>&copy; 2024 SILVERCARE. All rights reserved.</p>
         </div>
     </div>
 </body>

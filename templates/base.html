@@ -138,19 +138,19 @@
     {% endif %} -->
 
     <!-- Footer Section -->
-    <footer class="bg-dark text-white py-4">
+    <footer class="bg-dark text-white py-1">
         <div class="container text-center">
             <p>&copy; 2024 Silvercare. All rights reserved.</p>
-            <div class="social-icons mb-3">
+            <div class="social-icons mb-1">
                 <a href="#" class="text-white mx-2"><i class="fab fa-facebook-f"></i></a>
                 <a href="#" class="text-white mx-2"><i class="fab fa-twitter"></i></a>
                 <a href="#" class="text-white mx-2"><i class="fab fa-instagram"></i></a>
                 <a href="#" class="text-white mx-2"><i class="fab fa-linkedin-in"></i></a>
             </div>
             <div class="footer-links">
-                <a href="#" class="mx-2">Privacy Policy</a>
-                <a href="#" class="mx-2">Terms of Service</a>
-                <a href="#" class="mx-2">Contact Us</a>
+                <a href="{% url 'privacy-policy' %}" class="mx-2">Privacy Policy</a>
+                <a href="{% url 'terms-of-service' %}" class="mx-2">Terms of Service</a>                
+                <a href="{% url 'contact-us' %}" class="mx-2">Contact Us</a>
             </div>
         </div>
     </footer>
