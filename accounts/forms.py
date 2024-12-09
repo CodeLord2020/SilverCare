@@ -7,10 +7,35 @@ from django.core.mail import send_mail
 from django.contrib.auth import password_validation
 from django.utils.translation import gettext_lazy as _
 
+# class CustomUserCreationForm(UserCreationForm):
+#     """
+#     Enhanced user creation form
+#     """
+#     class Meta:
+#         model = User
+#         fields = (
+#             'email', 
+#             'first_name', 
+#             'last_name', 
+#             'phone_number', 
+#             'user_type'
+#         )
+
+#     def clean_email(self):
+#         """
+#         Validate email uniqueness
+#         """
+#         email = self.cleaned_data['email']
+#         try:
+#             User.objects.get(email=email)
+#             raise forms.ValidationError("A user with this email already exists.")
+#         except User.DoesNotExist:
+#             return email
+        
 class CustomUserCreationForm(UserCreationForm):
-    """
-    Enhanced user creation form
-    """
+    backup_phone_number = forms.CharField(required=False)
+    profile_picture = forms.ImageField(required=False)
+
     class Meta:
         model = User
         fields = (
@@ -18,20 +43,59 @@ class CustomUserCreationForm(UserCreationForm):
             'first_name', 
             'last_name', 
             'phone_number', 
+            'backup_phone_number',
+            'profile_picture',
             'user_type'
         )
 
-    def clean_email(self):
+    phone_number = forms.CharField(
+        label="Phone Number",
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter your phone number with country code (e.g., +6471234567)',
+        }),
+        help_text="Include the '+' and country code before your number.",
+    )
+
+    backup_phone_number = forms.CharField(
+        label="Backup Phone Number",
+        required=False,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter backup phone number with country code (e.g., +6471234567)',
+        }),
+        help_text="Optional. Include the '+' and country code before your number.",
+    )
+
+    def clean_phone_number(self):
         """
-        Validate email uniqueness
+        Validate primary phone number format.
         """
-        email = self.cleaned_data['email']
-        try:
-            User.objects.get(email=email)
-            raise forms.ValidationError("A user with this email already exists.")
-        except User.DoesNotExist:
-            return email
+        phone_number = self.cleaned_data.get('phone_number')
+        if not phone_number.startswith('+'):
+            raise forms.ValidationError("Phone number must start with '+'.")
+        return phone_number
+
+    def clean_backup_phone_number(self):
+        """
+        Validate backup phone number format if provided.
+        """
+        backup_phone_number = self.cleaned_data.get('backup_phone_number')
+        if backup_phone_number and not backup_phone_number.startswith('+'):
+            raise forms.ValidationError("Backup phone number must start with '+'.")
+        return backup_phone_number
+    
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        if self.cleaned_data.get('backup_phone_number'):
+            user.backup_phone_number = self.cleaned_data['backup_phone_number']
+        if self.cleaned_data.get('profile_picture'):
+            user.profile_picture = self.cleaned_data['profile_picture']
         
+        if commit:
+            user.save()
+        return user
 
 
 class CustomAuthenticationForm(AuthenticationForm):
