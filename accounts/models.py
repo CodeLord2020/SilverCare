@@ -25,12 +25,14 @@ class User(AbstractUser):
     phone_number = PhoneNumberField(
         unique=True,  # Ensure no duplicate phone numbers
         null=False,
-        blank=False
+        blank=False,
+        help_text="Enter your phone number starting with the country code (e.g., +647...)."
     )
     backup_phone_number = PhoneNumberField(
         unique=False, 
         null=True,
-        blank=True
+        blank=True,
+        help_text="Enter your phone number starting with the country code (e.g., +647...)."
     )
 
     profile_picture = CloudinaryField(
