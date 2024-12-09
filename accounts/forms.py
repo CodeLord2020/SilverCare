@@ -45,7 +45,8 @@ class CustomUserCreationForm(UserCreationForm):
             'phone_number', 
             'backup_phone_number',
             'profile_picture',
-            'user_type'
+            'user_type',
+            'address'
         )
 
     phone_number = forms.CharField(

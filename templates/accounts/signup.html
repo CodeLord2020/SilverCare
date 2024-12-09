@@ -9,6 +9,20 @@
                 <div class="card-body">
                     <form method="post" action="{% url 'register' %}" enctype="multipart/form-data" novalidate>
                             {% csrf_token %}
+
+                            <!-- Profile Picture Field -->
+                            <div class="mb-3">
+                                <label for="profile_picture" class="form-label">Profile Picture (Optional)</label>
+                                <input type="file" name="profile_picture" id="profile_picture" class="form-control {% if form.profile_picture.errors %}is-invalid{% endif %}" accept="image/*">
+                                {% if form.profile_picture.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.profile_picture.errors %}
+                                            {{ error }}<br>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <small class="form-text text-muted">Max 5MB, recommended 500x500px</small>
+                            </div>
                         
                             <!-- First Name Field -->
                             <div class="mb-3 input-group">
@@ -97,20 +111,23 @@
                                     </div>
                                 {% endif %}
                             </div>
-                        
-                            <!-- Profile Picture Field -->
-                            <div class="mb-3">
-                                <label for="profile_picture" class="form-label">Profile Picture (Optional)</label>
-                                <input type="file" name="profile_picture" id="profile_picture" class="form-control {% if form.profile_picture.errors %}is-invalid{% endif %}" accept="image/*">
-                                {% if form.profile_picture.errors %}
+
+                            <!-- Address Field -->
+                            <div class="mb-3 input-group">
+                                <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                                <textarea name="address" id="address" class="form-control {% if form.address.errors %}is-invalid{% endif %}" 
+                                    placeholder="Your Address" rows="3">{{ form.address.value|default:'' }}</textarea>
+                                {% if form.address.errors %}
                                     <div class="invalid-feedback">
-                                        {% for error in form.profile_picture.errors %}
+                                        {% for error in form.address.errors %}
                                             {{ error }}<br>
                                         {% endfor %}
                                     </div>
                                 {% endif %}
-                                <small class="form-text text-muted">Max 5MB, recommended 500x500px</small>
                             </div>
+
+                        
+                            
                         
                             <!-- Password Field -->
                             <div class="mb-3 input-group">
