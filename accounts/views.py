@@ -93,7 +93,11 @@ class CustomLoginView(auth_views.LoginView):
 
     def form_invalid(self, form):
         # This method is called when the form validation fails.
-        messages.error(self.request, "Invalid username or password.")
+        for error in form.errors.get('__all__', []):
+            if 'not verified' in error.lower():
+                messages.warning(self.request, error)
+            else:
+                messages.error(self.request, "Invalid email or password. Please try again.")
         return super().form_invalid(form)
 
 
