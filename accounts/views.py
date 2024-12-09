@@ -38,6 +38,11 @@ class UserRegistrationView(CreateView):
     template_name = 'accounts/signup.html'
     success_url = reverse_lazy('login')
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['USER_TYPE_CHOICES'] = User.USER_TYPE_CHOICES
+        return context
+
     def form_valid(self, form):
         """
         Additional processing on successful form submission
