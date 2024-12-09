@@ -7,35 +7,141 @@
         <div class="col-md-6">
             <div class="card shadow-lg">
                 <div class="card-body">
-                    <form method="post" novalidate>
-                        {% csrf_token %}
+                    <form method="post" action="{% url 'register' %}" enctype="multipart/form-data" novalidate>
+                            {% csrf_token %}
                         
-                        <!-- Username Field -->
-                        <div class="mb-3 input-group">
-                            <span class="input-group-text"><i class="fas fa-user"></i></span>
-                            <input type="text" name="username" id="username" class="form-control" placeholder="Username" required>
-                        </div>
-
-                        <!-- Email Field -->
-                        <div class="mb-3 input-group">
-                            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                            <input type="email" name="email" id="email" class="form-control" placeholder="Email Address" required>
-                        </div>
-
-                        <!-- Password Field -->
-                        <div class="mb-3 input-group">
-                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                            <input type="password" name="password1" id="password1" class="form-control" placeholder="Password" required>
-                        </div>
-
-                        <!-- Confirm Password Field -->
-                        <div class="mb-4 input-group">
-                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                            <input type="password" name="password2" id="password2" class="form-control" placeholder="Confirm Password" required>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary w-100">Sign Up</button>
-                    </form>
+                            <!-- First Name Field -->
+                            <div class="mb-3 input-group">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                <input type="text" name="first_name" id="first_name" class="form-control {% if form.first_name.errors %}is-invalid{% endif %}" 
+                                       placeholder="First Name" value="{{ form.first_name.value|default:'' }}" required>
+                                {% if form.first_name.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.first_name.errors %}
+                                            {{ error }}<br>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        
+                            <!-- Last Name Field -->
+                            <div class="mb-3 input-group">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                <input type="text" name="last_name" id="last_name" class="form-control {% if form.last_name.errors %}is-invalid{% endif %}"
+                                       placeholder="Last Name" value="{{ form.last_name.value|default:'' }}" required>
+                                {% if form.last_name.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.last_name.errors %}
+                                            {{ error }}<br>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        
+                            <!-- Email Field -->
+                            <div class="mb-3 input-group">
+                                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                <input type="email" name="email" id="email" class="form-control {% if form.email.errors %}is-invalid{% endif %}"
+                                       placeholder="Email Address" value="{{ form.email.value|default:'' }}" required>
+                                {% if form.email.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.email.errors %}
+                                            {{ error }}<br>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        
+                            <!-- Phone Number Field -->
+                            <div class="mb-3 input-group">
+                                <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                <input type="tel" name="phone_number" id="phone_number" class="form-control {% if form.phone_number.errors %}is-invalid{% endif %}"
+                                       placeholder="Phone Number  (+654.....format)" value="{{ form.phone_number.value|default:'' }}" required>
+                                {% if form.phone_number.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.phone_number.errors %}
+                                            {{ error }}<br>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        
+                            <!-- Backup Phone Number Field -->
+                            <div class="mb-3 input-group">
+                                <span class="input-group-text"><i class="fas fa-phone-alt"></i></span>
+                                <input type="tel" name="backup_phone_number" id="backup_phone_number" class="form-control {% if form.backup_phone_number.errors %}is-invalid{% endif %}"
+                                       placeholder="Backup Phone Number   (+654.....format)" value="{{ form.backup_phone_number.value|default:'' }}">
+                                {% if form.backup_phone_number.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.backup_phone_number.errors %}
+                                            {{ error }}<br>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        
+                            <!-- User Type Field -->
+                            <div class="mb-3 input-group">
+                                <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
+                                <select name="user_type" id="user_type" class="form-control {% if form.user_type.errors %}is-invalid{% endif %}" required>
+                                    <option value="">Select User Type</option>
+                                    {% for type_value, type_label in USER_TYPE_CHOICES %}
+                                        <option value="{{ type_value }}" {% if form.user_type.value == type_value %}selected{% endif %}>{{ type_label }}</option>
+                                    {% endfor %}
+                                </select>
+                                {% if form.user_type.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.user_type.errors %}
+                                            {{ error }}<br>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        
+                            <!-- Profile Picture Field -->
+                            <div class="mb-3">
+                                <label for="profile_picture" class="form-label">Profile Picture (Optional)</label>
+                                <input type="file" name="profile_picture" id="profile_picture" class="form-control {% if form.profile_picture.errors %}is-invalid{% endif %}" accept="image/*">
+                                {% if form.profile_picture.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.profile_picture.errors %}
+                                            {{ error }}<br>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <small class="form-text text-muted">Max 5MB, recommended 500x500px</small>
+                            </div>
+                        
+                            <!-- Password Field -->
+                            <div class="mb-3 input-group">
+                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                <input type="password" name="password1" id="password1" class="form-control {% if form.password1.errors %}is-invalid{% endif %}"
+                                       placeholder="Password" required>
+                                {% if form.password1.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.password1.errors %}
+                                            {{ error }}<br>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        
+                            <!-- Confirm Password Field -->
+                            <div class="mb-4 input-group">
+                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                <input type="password" name="password2" id="password2" class="form-control {% if form.password2.errors %}is-invalid{% endif %}"
+                                       placeholder="Confirm Password" required>
+                                {% if form.password2.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.password2.errors %}
+                                            {{ error }}<br>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        
+                            <button type="submit" class="btn btn-primary w-100">Sign Up</button>
+                        </form>
 
                     {% if form.errors %}
                         <div class="alert alert-danger mt-3">
@@ -55,7 +161,6 @@
                 <p>Already have an account?</p>
                 <a class="btn btn-outline-info w-50 py-2 mb-2" href="{% url 'login' %}">Log In</a>
                 <a class="btn btn-outline-danger w-50 h-9 py-2 mb-2" href="{% url 'forgot-password' %}">Forgot your password?</a>
-
             </div>
         </div>
     </div>
