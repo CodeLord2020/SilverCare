@@ -32,6 +32,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path('', DashboardView.as_view(), name='home'),
     path('base1/', Base1View.as_view(), name='base1'),
+    path('base1/profile/', Base1View.as_view(), name='profile'),
     path('test-mail/', TestMail.as_view(), name='testmail'),
     path('accounts/', include('accounts.urls')),
     path('tasks/', include('eldertasks.urls')),
