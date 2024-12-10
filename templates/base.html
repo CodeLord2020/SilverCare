@@ -1,171 +1,185 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Silvercare{% endblock %}</title>
-    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
+    <!-- <link rel="stylesheet" href="{% static 'css/style.css' %}"> -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-    <style>
-        /* Custom styles */
-        .navbar-brand {
-            font-weight: bold;
-            font-size: 1.5rem;
-            color: #fff;
-        }
-        .nav-link {
-            font-weight: 500;
-            font-size: 1rem;
-            color: #fff !important;
-            transition: color 0.3s ease;
-        }
-        .nav-link:hover {
-            color: #00aced !important;
-        }
-        .hero {
-            background: url("{% static 'img/hero-bg.jpg' %}") center center/cover no-repeat;
-            height: 400px;
-            color: white;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-        .hero h1 {
-            font-size: 3rem;
-            font-weight: bold;
-        }
-        .hero p {
-            font-size: 1.2rem;
-        }
-        .footer-links a {
-            color: #adb5bd;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-        .footer-links a:hover {
-            color: #00aced;
-        }
-        .social-icons a {
-            font-size: 1.5rem;
-            transition: color 0.3s ease;
-        }
-        .social-icons a:hover {
-            color: #00aced !important;
-        }
-    </style>
+    
+    {% block extra_head %}{% endblock %}
 </head>
-<body class="d-flex flex-column min-vh-100">
-    <!-- Navbar -->
+
+<body>
     <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <nav class="navbar navbar-expand navbar-dark sticky-top" style="z-index: 1; background-color: #11101d;">
             <div class="container">
-                <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
+                <a class="navbar-brand d-flex align-items-left" href="{% url 'home' %}">
                     <img src="{% static 'img/logo1.jpg' %}" class="rounded-circle me-2" width="50" height="50" alt="Logo">
-                    Silvercare
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
+                <div class="">
                     <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{%  url 'base1' %}">My Profile</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'tasks:task_list' %}">My Tasks</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'tasks:task_create' %}">Create Task</a>
-                        </li>
-                        {% if user.is_authenticated %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'logout' %}">Logout</a>
-                            </li>
-                        {% else %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'login' %}">Login</a>
-                            </li>
-                        {% endif %}
+                        
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
 
-    <!-- Hero Section
-    <section class="hero">
-        <div class="container">
-            <h1>Welcome to Silvercare</h1>
-            <p>Your partner in elderly care assistance.</p>
-            <a href="{% url 'tasks:task_list' %}" class="btn btn-primary btn-lg mt-3">Get Started</a>
+    <!-- Sidebar -->
+    <div class="sidebar" style="z-index: 2;">
+        <div class="logo-details">
+            <div class="logo_name">SilverCare</div>
+            <i class='bx bx-menu' id="btn"></i>
         </div>
-    </section> -->
+        <ul class="nav-list">
+            <!-- Search -->
+            <li>
+                <i class='bx bx-search'></i>
+                <input type="text" placeholder="Search...">
+                <span class="tooltip">Search</span>
+            </li>
 
-    <!-- Main Content -->
-    <main class="flex-grow-1 py-4">
-        <div class="container">
-            {% block content %}{% endblock %}
-        </div>
-    </main>
+            <!-- Home -->
+            <li>
+                <a href="{% url 'home' %}">
+                    <i class='bx bx-home'></i>
+                    <span class="links_name">Home</span>
+                </a>
+                <span class="tooltip">Home</span>
+            </li>
 
-    <div class="toast-container position-fixed bottom-0 end-0 p-3">
-        {% for message in messages %}
-            <div class="toast align-items-center text-white bg-{{ message.tags }} border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
-                <div class="d-flex">
-                    <div class="toast-body">
-                        {{ message }}
+            <!-- Profile -->
+            <li>
+                <a href="{% url 'profile' %}">
+                    <i class='bx bx-user'></i>
+                    <span class="links_name">Profile</span>
+                </a>
+                <span class="tooltip">Profile</span>
+            </li>
+
+            <!-- Create Task -->
+            <li>
+                <a href="{% url 'tasks:task_create' %}">
+                    <i class='bx bx-plus-circle'></i>
+                    <span class="links_name">Create Task</span>
+                </a>
+                <span class="tooltip">Create Task</span>
+            </li>
+
+            <!-- List Task -->
+            <li>
+                <a href="{% url 'tasks:task_list' %}">
+                    <i class='bx bx-list-ul'></i>
+                    <span class="links_name">List Task</span>
+                </a>
+                <span class="tooltip">List Task</span>
+            </li>
+
+            <!-- About -->
+            <li>
+                <a href="{% url 'terms-of-service' %}">
+                    <i class='bx bx-info-circle'></i>
+                    <span class="links_name">About</span>
+                </a>
+                <span class="tooltip">About</span>
+            </li>
+
+            <!-- Contact -->
+            <li>
+                <a href="{% url 'contact-us' %}">
+                    <i class='bx bx-envelope'></i>
+                    <span class="links_name">Contact</span>
+                </a>
+                <span class="tooltip">Contact</span>
+            </li>
+
+            <!-- Privacy Policy -->
+            <li>
+                <a href="{% url 'privacy-policy' %}">
+                    <i class='bx bx-lock-alt'></i>
+                    <span class="links_name">Privacy Policy</span>
+                </a>
+                <span class="tooltip">Privacy Policy</span>
+            </li>
+
+            <!-- Terms of Service -->
+            <li>
+                <a href="{% url 'terms-of-service' %}">
+                    <i class='bx bx-file'></i>
+                    <span class="links_name">Terms of Service</span>
+                </a>
+                <span class="tooltip">Terms of Service</span>
+            </li>
+
+            <!-- Profile Section -->
+            <li class="profile">
+                <li class="profile">
+                    {% load static %}
+                    <div class="profile-details">
+                        {% with static_url="img/hero-bp.jpg" %}
+                            {% if user.is_authenticated %}
+                                <img 
+                                    src="{{ user.profile.profile_picture.url }}" 
+                                    alt="Profile Image" 
+                                    onerror="this.src='{% static static_url %}';">
+                                <div class="name_job">
+                                    <div class="name">{{ user.get_full_name|default:user.username }}</div>
+                                    <div class="job">Caregiver</div>
+                                </div>
+                            {% endif %}
+                        {% endwith %}
                     </div>
-                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-                </div>
-            </div>
-        {% endfor %}
+    
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'logout' %}">
+                        <i class='bx bx-log-out' id="log_out"></i>
+                    </a>
+                    {% else %}
+                    <a href="{% url 'login' %}">
+                        <i class='bx bx-log-in' id="log_in"></i>
+                    </a>
+                    {% endif %}
+                </li>
+        </ul>
     </div>
 
-    <!-- {% if messages %}
-        <div class="container mt-4">
+    <!-- Home Section -->
+    <section class="home-section">
+        <div class="toast-container position-fixed top-0 end-0 p-3">
             {% for message in messages %}
-                <div class="alert alert-{% if message.tags %}{{ message.tags }}{% else %}info{% endif %} alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="toast align-items-center text-white bg-{{ message.tags }} border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            {{ message }}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
                 </div>
             {% endfor %}
         </div>
-    {% endif %} -->
+           <!-- Bootstrap JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 
-    <!-- Footer Section -->
-    <footer class="bg-dark text-white py-1">
-        <div class="container text-center">
-            <p>&copy; 2024 Silvercare. All rights reserved.</p>
-            <div class="social-icons mb-1">
-                <a href="#" class="text-white mx-2"><i class="fab fa-facebook-f"></i></a>
-                <a href="#" class="text-white mx-2"><i class="fab fa-twitter"></i></a>
-                <a href="#" class="text-white mx-2"><i class="fab fa-instagram"></i></a>
-                <a href="#" class="text-white mx-2"><i class="fab fa-linkedin-in"></i></a>
-            </div>
-            <div class="footer-links">
-                <a href="{% url 'privacy-policy' %}" class="mx-2">Privacy Policy</a>
-                <a href="{% url 'terms-of-service' %}" class="mx-2">Terms of Service</a>                
-                <a href="{% url 'contact-us' %}" class="mx-2">Contact Us</a>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var toastElList = [].slice.call(document.querySelectorAll('.toast'));
-            var toastList = toastElList.map(function (toastEl) {
-                return new bootstrap.Toast(toastEl);
+    <!-- Custom JavaScript -->
+    <script src="{% static 'js/sidebar.js' %}"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                var toastElList = [].slice.call(document.querySelectorAll('.toast'));
+                var toastList = toastElList.map(function (toastEl) {
+                    return new bootstrap.Toast(toastEl);
+                });
+                toastList.forEach(toast => toast.show());
             });
-            toastList.forEach(toast => toast.show());
-        });
-    </script>
-    
+        </script>
+        {% block content %}{% endblock %}
+    </section>
 </body>
+
 </html>
