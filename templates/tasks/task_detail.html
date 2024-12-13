@@ -104,9 +104,9 @@
         <div class="col-12">
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-secondary text-white">
-                    <h3 class="mb-0">Task Applications</h3>
+                    <h3 class="mb-0">Task Applications ({{ applications.count }})</h3>
                 </div>
-                <div class="card-body p-0">
+                <!-- <div class="card-body p-0">
                     {% if applications %}
                         <div class="list-group list-group-flush">
                             {% for application in applications %}
@@ -125,6 +125,52 @@
                                     {% if user.is_authenticated and user == task.elder %}
                                         <div class="btn-group">
                                             <a href="#" class="btn btn-sm btn-outline-primary">View Profile</a>
+                                            <a href="#" class="btn btn-sm btn-outline-success">Accept</a>
+                                            <a href="#" class="btn btn-sm btn-outline-danger">Reject</a>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <p class="text-muted mb-0">No applications yet</p>
+                        </div>
+                    {% endif %}
+                </div> -->
+                <div class="card-body p-0">
+                    <!-- <div class="d-flex justify-content-between align-items-center border-bottom pb-3">
+                        <h5 class="mb-0">Applications ({{ applications.count }})</h5>
+                        {% if user.is_authenticated and user == task.elder %}
+                            <a href="#" class="btn btn-sm btn-outline-primary">View All</a>
+                        {% endif %}
+                    </div> -->
+                
+                    {% if applications %}
+                        <div class="list-group list-group-flush">
+                            {% for application in applications %}
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        {% if application.helper.profile_picture %}
+                                            <img src="{{ application.helper.profile_picture.url }}" alt="{{ application.helper.name }}" class="rounded-circle me-2" width="40" height="40">
+                                        {% else %}
+                                            <div class="rounded-circle bg-secondary text-white d-flex justify-content-center align-items-center me-2" style="width: 40px; height: 40px;">
+                                                {{ application.helper.name|first }}
+                                            </div>
+                                        {% endif %}
+                                        <a href="{% url 'home'  %}" class="text-decoration-none text-dark">
+                                            <h6 class="mb-0">{{ application.helper.name }}</h6>
+                                        </a>
+                                    </div>
+                                    <span class="badge
+                                        {% if application.status == 'Pending' %}bg-warning
+                                        {% elif application.status == 'Accepted' %}bg-success
+                                        {% elif application.status == 'Rejected' %}bg-danger
+                                        {% else %}bg-secondary{% endif %}">
+                                        {{ application.get_status_display }}
+                                    </span>
+                                    {% if user.is_authenticated and user == task.elder %}
+                                        <div class="btn-group">
                                             <a href="#" class="btn btn-sm btn-outline-success">Accept</a>
                                             <a href="#" class="btn btn-sm btn-outline-danger">Reject</a>
                                         </div>
