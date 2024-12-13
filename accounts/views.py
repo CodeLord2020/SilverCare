@@ -290,12 +290,14 @@ class DashboardView(LoginRequiredMixin, TemplateView):
     """
     template_name = 'accounts/dashboard.html'
 
+
     def get_context_data(self, **kwargs):
         """
         Add any additional context if needed.
         """
         context = super().get_context_data(**kwargs)
         context['welcome_message'] = f"Welcome, {self.request.user.first_name}!"
+        context['page_topic'] = "DASHBOARD"
         return context
 
 class Base1View(LoginRequiredMixin, TemplateView):
