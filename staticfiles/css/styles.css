@@ -24,7 +24,8 @@ button {
 
 
 body {
-    background-image: url('../img/sc3.jpg');
+    /* background-image: url('../img/sc3.jpg'); */
+    background-color: #979ca0;
     background-blend-mode: darken;
     background-size: cover;
     background-repeat: no-repeat;
@@ -117,4 +118,38 @@ button {
 
 .icon-container i:hover {
     color: #ff9800;
+}
+
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%; /* Ensures it spans the entire width */
+    z-index: 1030; /* Keeps it above other content */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+body {
+    padding-top: 56px; /* Adjust padding to account for the navbar height */
+}
+
+.img-fluid {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 5px;
+    background-color: #f9f9f9;
+}
+
+.card {
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: scale(1.05);
+}
+
+.form-control {
+    border: 2px solid #ddd;
+    padding: 10px;
 }
