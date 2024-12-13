@@ -4,42 +4,7 @@
 
 {% block content %}
 <div class="container-fluid py-5">
-    <div class="text-center mb-5">
-        <h1 class="fw-bold display-5 text-primary animate__animated animate__fadeInDown">Dashboard</h1>
-        <!-- <p class="fw-bold animate__animated animate__fadeInUp">Manage your tasks, create new ones, and personalize your profile effortlessly.</p> -->
-    </div>
     <div class="row justify-content-center">
-        <!-- My Tasks Card -->
-        <div class="col-lg-4 col-md-6 mb-4">
-            <div class="card shadow-lg rounded-4 h-100 task-card task-card-blue">
-                <div class="card-body text-center d-flex flex-column justify-content-between">
-                    <div class="icon-container">
-                        <i class="fas fa-tasks fa-5x mb-3 animate__animated animate__bounce"></i>
-                    </div>
-                    <h5 class="card-title fw-bold text-primary">My Tasks</h5>
-                    <p class="card-text text-muted">View and manage your responsibilities and deadlines.</p>
-                    <a href="{% url 'tasks:task_list' %}" class="btn btn-primary btn-lg mt-3 rounded-pill shadow">
-                        View Tasks
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Create a Task Card -->
-        <div class="col-lg-4 col-md-6 mb-4">
-            <div class="card shadow-lg rounded-4 h-100 task-card task-card-green">
-                <div class="card-body text-center d-flex flex-column justify-content-between">
-                    <div class="icon-container">
-                        <i class="fas fa-plus-circle fa-5x mb-3 animate__animated animate__pulse animate__infinite"></i>
-                    </div>
-                    <h5 class="card-title fw-bold text-success">Create a Task</h5>
-                    <p class="card-text text-muted">Stay organized by adding tasks with relevant details.</p>
-                    <a href="{% url 'tasks:task_create' %}" class="btn btn-success btn-lg mt-3 rounded-pill shadow">
-                        Create Task
-                    </a>
-                </div>
-            </div>
-        </div>
 
         <!-- Profile Card -->
         <div class="col-lg-4 col-md-6 mb-4">
@@ -56,6 +21,41 @@
                 </div>
             </div>
         </div>
+
+        
+        <!-- Create a Task Card -->
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card shadow-lg rounded-4 h-100 task-card task-card-green">
+                <div class="card-body text-center d-flex flex-column justify-content-between">
+                    <div class="icon-container">
+                        <i class="fas fa-plus-circle fa-5x mb-3 animate__animated animate__pulse animate__infinite"></i>
+                    </div>
+                    <h5 class="card-title fw-bold text-success">Create a Task</h5>
+                    <p class="card-text text-muted">Stay organized by adding tasks with relevant details.</p>
+                    <a href="{% url 'tasks:task_create' %}" class="btn btn-success btn-lg mt-3 rounded-pill shadow">
+                        Create Task
+                    </a>
+                </div>
+            </div>
+        </div>
+    
+        <!-- My Tasks Card -->
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card shadow-lg rounded-4 h-100 task-card task-card-blue">
+                <div class="card-body text-center d-flex flex-column justify-content-between">
+                    <div class="icon-container">
+                        <i class="fas fa-tasks fa-5x mb-3 animate__animated animate__bounce"></i>
+                    </div>
+                    <h5 class="card-title fw-bold text-primary">My Tasks</h5>
+                    <p class="card-text text-muted">View and manage your responsibilities and deadlines.</p>
+                    <a href="{% url 'tasks:task_list' %}" class="btn btn-primary btn-lg mt-3 rounded-pill shadow">
+                        View Tasks
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        
     </div>
 </div>
 {% endblock %}

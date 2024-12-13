@@ -7,24 +7,90 @@
     <title>{% block title %}Silvercare{% endblock %}</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <style>
-        /* Custom styles */
-        .navbar-brand {
-            font-weight: bold;
-            font-size: 1.5rem;
-            color: #fff;
+
+
+
+        .block {
+            background: #9ea7af;
+            box-shadow: 0px 8px 20px rgba(255, 255, 255, 0.15), 0px 4px 10px rgba(120, 20, 20, 0.1);
+            border-radius: 15px;
+            padding: 40px;
+            margin: 0 auto; 
+            width: 90%;
+            max-width: 1200px; 
+            max-height: fit-content;
+            text-align: center;
+            transform: translateZ(0);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0px 12px 25px rgba(0, 0, 0, 0.2), 0px 6px 25px rgba(13, 10, 10, 0.1);
         }
-        .nav-link {
+
+        .block:hover {
+            transform: translateY(-10px);
+            background-color: #8c959d;
+            box-shadow: 0px 12px 25px rgba(0, 0, 0, 0.2), 0px 6px 25px rgba(207, 198, 198, 0.1);
+            color: #d3d6e4;
+            text-size-adjust: 1rem;
+        }
+
+        .block h1 {
+            font-weight: bold;
+            font-size: 2rem;
+            font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            color: #e7eaed; /* Bootstrap primary color */
+            margin: 0;
+        }
+
+        .block p {
             font-weight: 500;
+            color: #05ff69; /* Bootstrap secondary color */
+            margin-top: 15px;
+        }
+        .navbar {
+            font-family: 'Arial', sans-serif;
             font-size: 1rem;
-            color: #fff !important;
+        }
+
+        .nav-item .nav-link {
+            color: #f8f9fa;
             transition: color 0.3s ease;
         }
-        .nav-link:hover {
-            color: #00aced !important;
+
+        .nav-item .nav-link:hover {
+            color: #007bff;
         }
+
+        .navbar-toggler {
+            border: none;
+        }
+
+        .navbar-toggler-icon {
+            background-color: #212529;
+        }
+
+        @media (max-width: 992px) {
+            .navbar-collapse {
+                background: rgba(37, 37, 37, 0.8);
+                padding: 15px;
+                border-radius: 8px;
+            }
+
+            .navbar-nav .nav-item {
+                margin-bottom: 15px;
+            }
+
+            .nav-link {
+                font-size: 1.1rem;
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+            }
+        }
+     
         .hero {
             background: url("{% static 'img/hero-bg.jpg' %}") center center/cover no-repeat;
             height: 400px;
@@ -61,7 +127,53 @@
 </head>
 <body class="d-flex flex-column min-vh-100">
     <!-- Navbar -->
-    <header>
+    <header class="stickynav">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
+                    <img src="{% static 'img/logo1.jpg' %}" class="rounded-circle me-2" width="50" height="50" alt="Logo">
+                    Silvercare
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto d-flex align-items-center">
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center" href="{% url 'base1' %}">
+                                <i class="bi bi-person-circle me-2"></i> My Profile
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center" href="{% url 'tasks:task_list' %}">
+                                <i class="bi bi-list-task me-2"></i> My Tasks
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center" href="{% url 'tasks:task_create' %}">
+                                <i class="bi bi-plus-circle me-2"></i> Create Task
+                            </a>
+                        </li>
+                        {% if user.is_authenticated %}
+                            <li class="nav-item">
+                                <a class="nav-link d-flex align-items-center" href="{% url 'logout' %}">
+                                    <i class="bi bi-box-arrow-right me-2"></i> Logout
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link d-flex align-items-center" href="{% url 'login' %}">
+                                    <i class="bi bi-box-arrow-in-right me-2"></i> Login
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    
+    <!-- <header>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
             <div class="container">
                 <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
@@ -95,7 +207,7 @@
                 </div>
             </div>
         </nav>
-    </header>
+    </header> -->
 
     <!-- Hero Section
     <section class="hero">
@@ -107,13 +219,19 @@
     </section> -->
 
     <!-- Main Content -->
-    <main class="flex-grow-1 py-4">
+    <main class="flex-grow-1 py-4 mt-2">
+        {% if page_topic %}
+        <div class="block animate__animated animate__fadeInDown">
+            <h1 class="fw-bold display-5">{{page_topic}}</h1>
+            <!-- <p class="fw-bold animate__animated animate__fadeInUp">Manage your tasks, create new ones, and personalize your profile effortlessly.</p> -->
+        </div>
+        {% endif %}
         <div class="container">
             {% block content %}{% endblock %}
         </div>
     </main>
 
-    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div class="toast-container position-fixed top-0 end-0 p-3">
         {% for message in messages %}
             <div class="toast align-items-center text-white bg-{{ message.tags }} border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
                 <div class="d-flex">
