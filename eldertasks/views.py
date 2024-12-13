@@ -66,6 +66,7 @@ class TaskListView(LoginRequiredMixin, ListView):
         context['current_task_type'] = self.request.GET.get('task_type', '')
         context['show_my_tasks'] = self.request.GET.get('my_tasks') == 'true'
         context['search_query'] = self.request.GET.get('search', '')
+        context['page_topic'] = "Task Explorer"
         
         return context
     
@@ -79,9 +80,11 @@ class TaskDetailView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        tasktype = self.object.task_type.name
         context["applications"] = self.object.applications.all()
         context["review_form"] = ReviewForm()  # If the task is completed, elder can leave a review
         context["medias"] = [media for media in self.object.taskmedia.all()]
+        context['page_topic'] = f"CATEGORY: {tasktype}"
         return context
 
 
@@ -112,6 +115,7 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['media_form'] = TaskMediaForm()  # Add media upload form to context
+        context['page_topic'] = "CREATE TASK"
         return context
     
 
