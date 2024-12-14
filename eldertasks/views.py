@@ -25,7 +25,7 @@ from django.contrib import messages
 
 from django.db.models import Q
 
-class TaskListView(LoginRequiredMixin, ListView):
+class TaskListView(ListView):
     model = Task
     template_name = "tasks/task_list.html"
     context_object_name = "tasks"
@@ -73,7 +73,7 @@ class TaskListView(LoginRequiredMixin, ListView):
 
 
 # Task Detail View (Includes Applications)
-class TaskDetailView(LoginRequiredMixin, DetailView):
+class TaskDetailView(DetailView):
     model = Task
     template_name = "tasks/task_detail.html"
     context_object_name = "task"
