@@ -60,7 +60,7 @@
                             hx-trigger="keyup changed delay:500ms"
                         >
                     </div>
-
+                    {% if user.is_authenticated %}
                     <!-- My Tasks Toggle -->
                     <div class="col-md-3">
                         <div class="form-check">
@@ -78,6 +78,7 @@
                             </label>
                         </div>
                     </div>
+                    {% endif %}
 
                     <!-- Create Task Button -->
                     <div class="col-md-2">
