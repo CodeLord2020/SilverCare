@@ -284,7 +284,7 @@ class ChangePasswordView(LoginRequiredMixin, View):
         return render(request, self.template_name, {'form': form})
 
 
-class DashboardView(LoginRequiredMixin, TemplateView):
+class DashboardView(TemplateView):
     """
     Dashboard view for authenticated users.
     """
