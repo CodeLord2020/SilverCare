@@ -285,23 +285,22 @@ class ChangePasswordView(LoginRequiredMixin, View):
 
 
 class DashboardView(TemplateView):
-    """
-    Dashboard view for authenticated users.
-    """
+    """ Dashboard view for authenticated users. """
     template_name = 'accounts/dashboard.html'
 
-
     def get_context_data(self, **kwargs):
-        """
-        Add any additional context if needed.
-        """
+        """ Add any additional context if needed. """
         context = super().get_context_data(**kwargs)
-        context['welcome_message'] = "Welcome stranger!"
-        first_name = self.request.user.first_name
-        if first_name:
+        
+        if self.request.user.is_authenticated:
             context['welcome_message'] = f"Welcome, {self.request.user.first_name}!"
+        else:
+            context['welcome_message'] = "Welcome stranger!"
+        
         context['page_topic'] = "DASHBOARD"
+
         return context
+
 
 class Base1View(LoginRequiredMixin, TemplateView):
     """
