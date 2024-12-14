@@ -17,6 +17,7 @@ django-cors-headers==4.4.0
 django-filter==24.2
 django-htmx==1.21.0
 django-import-export==4.3.3
+phonenumberslite==8.13.51
 gunicorn==22.0.0
 psycopg2==2.9.10
 psycopg2-binary==2.9.10
