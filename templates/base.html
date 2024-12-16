@@ -139,11 +139,13 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto d-flex align-items-center">
+                        {% if user.is_authenticated %}
                         <li class="nav-item">
-                            <a class="nav-link d-flex align-items-center" href="{% url 'base1' %}">
+                            <a class="nav-link d-flex align-items-center" href="{% url 'profile' user.pk %}">
                                 <i class="bi bi-person-circle me-2"></i> My Profile
                             </a>
                         </li>
+                        {% endif %}
                         <li class="nav-item">
                             <a class="nav-link d-flex align-items-center" href="{% url 'tasks:task_list' %}">
                                 <i class="bi bi-list-task me-2"></i> My Tasks
