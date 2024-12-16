@@ -36,14 +36,17 @@ from django.utils.translation import gettext_lazy as _
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'email', 'phone_number', 'backup_phone_number', 'address', 'profile_picture']
+        fields = ['first_name', 'last_name', 'email', 'phone_number', 'backup_phone_number', 'address']
+        labels = {
+            'phone_number': 'Primary Phone Number',
+            'backup_phone_number': 'Backup Phone Number',
+            'address': 'Full Address'
+        }
         widgets = {
-            'profile_picture': forms.FileInput(),
             'phone_number': forms.TextInput(attrs={'placeholder': '+6471234567'}),
             'backup_phone_number': forms.TextInput(attrs={'placeholder': '+6471234567'}),
             'address': forms.Textarea(attrs={'rows': 3}),
         }
-
 
 class CustomUserCreationForm(UserCreationForm):
     backup_phone_number = forms.CharField(required=False)
