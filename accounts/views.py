@@ -306,7 +306,7 @@ class Base1View(LoginRequiredMixin, TemplateView):
     """
     Dashboard view for authenticated users.
     """
-    template_name = 'accounts/base1.html'
+    template_name = 'accounts/profile.html'
 
     def get_context_data(self, **kwargs):
         """
