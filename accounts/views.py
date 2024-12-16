@@ -8,7 +8,7 @@ from django.db.models import Avg
 from django.contrib.auth.mixins import LoginRequiredMixin
 from eldertasks.models import Notification
 from django.contrib.auth import views as auth_views
-from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth import update_session_auth_hash, login
 from django.views.generic import CreateView, View
 from django.utils.encoding import force_str, force_bytes
 from django .utils.http import urlsafe_base64_decode, urlsafe_base64_encode
@@ -145,6 +145,7 @@ class AccountVerificationView(View):
                 # Verify the user
                 user.is_verified = True
                 user.save()
+                login(request, user)
                 
                 messages.success(
                     request, 
