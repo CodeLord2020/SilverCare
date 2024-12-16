@@ -17,7 +17,6 @@ class UserResource(resources.ModelResource):
             'email', 
             'first_name', 
             'last_name', 
-            'user_type', 
             'is_verified', 
             'created_at'
         )
@@ -32,7 +31,6 @@ class CustomUserAdmin(UserAdmin, ImportExportModelAdmin):
     list_display = (
         'email', 
         'get_full_name', 
-        'user_type', 
         'is_verified', 
         'is_active', 
         'created_at'
@@ -40,7 +38,6 @@ class CustomUserAdmin(UserAdmin, ImportExportModelAdmin):
 
     # Filtering options
     list_filter = (
-        ('user_type', admin.ChoicesFieldListFilter),
         'is_verified', 
         'is_active',
         ('created_at', DateRangeFilter)
@@ -68,7 +65,6 @@ class CustomUserAdmin(UserAdmin, ImportExportModelAdmin):
         }),
         (_('Permissions'), {
             'fields': (
-                'user_type',
                 'is_verified',
                 'is_active', 
                 'is_staff', 
@@ -93,7 +89,6 @@ class CustomUserAdmin(UserAdmin, ImportExportModelAdmin):
                 'first_name', 
                 'last_name', 
                 'phone_number', 
-                'user_type',
                 'password1', 
                 'password2'
             )

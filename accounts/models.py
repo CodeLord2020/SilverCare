@@ -10,11 +10,11 @@ from cloudinary.models import CloudinaryField
 
 
 class User(AbstractUser):
-    USER_TYPE_CHOICES = [
-        ('Elder', 'Elder'),
-        ('Helper', 'Helper'),
-        ('Admin', 'Admin'),
-    ]
+    # USER_TYPE_CHOICES = [
+    #     ('Elder', 'Elder'),
+    #     ('Helper', 'Helper'),
+    #     ('Admin', 'Admin'),
+    # ]
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     username = None
@@ -49,7 +49,7 @@ class User(AbstractUser):
         }
     )
     address = models.TextField(blank=True, null=True)
-    user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES)
+    # user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES)
     is_verified = models.BooleanField(
         default=False,
         help_text="Account verification status"
@@ -68,7 +68,7 @@ class User(AbstractUser):
         ordering = ["-created_at"]
         indexes = [
             models.Index(fields=['email', 'is_verified']),
-            models.Index(fields=['user_type'])
+            # models.Index(fields=['user_type'])
         ]
 
     def __str__(self):
@@ -91,12 +91,12 @@ class User(AbstractUser):
             else 'path/to/default/profile/image.png'
         )
 
-    def is_elder(self):
-        return self.user_type == 'Elder'
+    # def is_elder(self):
+    #     return self.user_type == 'Elder'
 
 
-    def is_helper(self):
-        return self.user_type == 'Helper'
+    # def is_helper(self):
+    #     return self.user_type == 'Helper'
     
     def save(self, *args, **kwargs):
         """

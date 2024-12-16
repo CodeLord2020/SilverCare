@@ -40,7 +40,7 @@ class UserRegistrationView(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['USER_TYPE_CHOICES'] = User.USER_TYPE_CHOICES
+        # context['USER_TYPE_CHOICES'] = User.USER_TYPE_CHOICES
         return context
 
     def form_valid(self, form):
@@ -64,6 +64,12 @@ class UserRegistrationView(CreateView):
         )
         
         return response
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        context['page_topic'] = "CREATE ACCOUNT"
+        return context
     
     def form_invalid(self, form):
         """
