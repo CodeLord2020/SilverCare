@@ -15,7 +15,7 @@
                     </div>
                     <h5 class="card-title fw-bold text-warning">Profile</h5>
                     <p class="card-text text-muted">Update your information and preferences.</p>
-                    <a href="{% url 'profile' %}" class="btn btn-warning btn-lg mt-3 rounded-pill shadow">
+                    <a href="{% url 'profile' user.pk %}" class="btn btn-warning btn-lg mt-3 rounded-pill shadow">
                         View Profile
                     </a>
                 </div>
