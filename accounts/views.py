@@ -96,6 +96,12 @@ class CustomLoginView(auth_views.LoginView):
     redirect_field_name = 'next'
     redirect_to = reverse_lazy('home')
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        context['page_topic'] = "LOGIN"
+        return context
+
     def form_valid(self, form):
         # This method is called when the form is successfully validated.
         user = form.get_user()
@@ -194,6 +200,7 @@ def profile_view(request, user_id):
 
     context = {
         'user': user,
+        'page_topic' : "PROFILE",
         'profile_picture': profile_picture,
         'tasks_created_count': tasks_created_count,
         'tasks_completed_count': tasks_completed_count,
@@ -219,6 +226,12 @@ class ForgotPasswordView(View):
         """
         form = self.form_class()
         return render(request, self.template_name, {'form': form})
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        context['page_topic'] = "FORGOT PASSWORD"
+        return context
 
     def post(self, request):
         """
@@ -245,6 +258,12 @@ class PasswordResetConfirmView(View):
     """
     View to handle password reset confirmation
     """
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        context['page_topic'] = "RESET PASSWORD"
+        return context
     def get(self, request, uidb64, token):
         try:
             # Decode user ID
@@ -324,6 +343,12 @@ class ChangePasswordView(LoginRequiredMixin, View):
         """
         form = self.form_class(user=request.user)
         return render(request, self.template_name, {'form': form})
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        context['page_topic'] = "CHANGE PASSWORD"
+        return context
     
     def post(self, request):
         """
