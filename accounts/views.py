@@ -1,9 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.translation import gettext_lazy as _
 from django.urls import reverse_lazy, reverse
 # Create your views here.
 # from django.contrib.auth.forms import SetPasswordForm
 from django.views.generic import TemplateView
+from django.db.models import Avg
 from django.contrib.auth.mixins import LoginRequiredMixin
 from eldertasks.models import Notification
 from django.contrib.auth import views as auth_views
@@ -18,6 +19,8 @@ from django.contrib.auth.tokens import default_token_generator
 from django.urls import path
 from django.template import engines
 from .utils import AccountVerificationService, PasswordResetService
+from django.contrib.auth.decorators import login_required
+from eldertasks.models import Task, TaskApplication, Review
 from django.contrib import auth
 from .models import User
 from .forms import (
@@ -26,7 +29,8 @@ from .forms import (
     CustomSetPasswordForm,
     ForgotPasswordForm,
     ChangePasswordForm,
-    ContactUsForm
+    ContactUsForm,
+    UserProfileForm
 )
 
 class UserRegistrationView(CreateView):
@@ -154,6 +158,37 @@ class AccountVerificationView(View):
         
         return redirect('login')
     
+
+
+@login_required
+def profile_view(request, user_id):
+    # Get user
+    user = get_object_or_404(User, id=user_id)
+
+    # Statistics
+    tasks_created_count = Task.objects.filter(elder=user).count()
+    tasks_completed_count = Task.objects.filter(elder=user, status='Completed').count()
+    tasks_applied_count = TaskApplication.objects.filter(helper=user).count()
+    average_rating = Review.objects.filter(helper=user).aggregate(Avg('rating'))['rating__avg']
+
+    # Handle form submission for profile update
+    if request.method == 'POST' and request.user == user:
+        form = UserProfileForm(request.POST, request.FILES, instance=user)
+        if form.is_valid():
+            form.save()
+    else:
+        form = UserProfileForm(instance=user)
+
+    context = {
+        'user': user,
+        'tasks_created_count': tasks_created_count,
+        'tasks_completed_count': tasks_completed_count,
+        'tasks_applied_count': tasks_applied_count if request.user == user else None,
+        'average_rating': average_rating,
+        'form': form,
+    }
+
+    return render(request, 'accounts/profile.html', context)
 
 
 class ForgotPasswordView(View):

@@ -5,6 +5,7 @@ from .views import (
     UserRegistrationView,
     CustomLoginView,
     logout,
+    profile_view,
     ForgotPasswordView,
 )
 
@@ -32,4 +33,5 @@ urlpatterns = [
     path('auth/forgot-password/',
           ForgotPasswordView.as_view(),
             name='forgot-password'),
+    path('profile/<uuid:user_id>/', profile_view, name='profile'),
 ]

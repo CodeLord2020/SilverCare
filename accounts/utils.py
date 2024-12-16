@@ -33,6 +33,7 @@ class AccountVerificationService:
         
         # Full URL (assuming you have a domain in settings)
         full_verification_link = f"{settings.SITE_DOMAIN}{verification_link}"
+        print(full_verification_link)
 
         subject = "Welcome to SILVERCARE"
         sender = settings.EMAIL_HOST_USER 
