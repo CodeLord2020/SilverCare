@@ -17,6 +17,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth.tokens import default_token_generator
 from django.urls import path
+from django.http.response import HttpResponseForbidden
 from django.template import engines
 from .utils import AccountVerificationService, PasswordResetService
 from django.contrib.auth.decorators import login_required
@@ -143,7 +144,7 @@ class AccountVerificationView(View):
                     request, 
                     "Your account has been successfully verified!"
                 )
-                return redirect('login')
+                return redirect('home')
             
             else:
                 messages.error(
@@ -166,21 +167,34 @@ def profile_view(request, user_id):
     user = get_object_or_404(User, id=user_id)
 
     # Statistics
+    profile_picture = user.profile_picture_url
     tasks_created_count = Task.objects.filter(elder=user).count()
     tasks_completed_count = Task.objects.filter(elder=user, status='Completed').count()
     tasks_applied_count = TaskApplication.objects.filter(helper=user).count()
     average_rating = Review.objects.filter(helper=user).aggregate(Avg('rating'))['rating__avg']
 
     # Handle form submission for profile update
-    if request.method == 'POST' and request.user == user:
-        form = UserProfileForm(request.POST, request.FILES, instance=user)
-        if form.is_valid():
-            form.save()
+    if request.method == 'POST':#and request.user == user:
+        if request.user == user:
+            # Check if a file was uploaded via the profile picture form
+            if 'profile_picture' in request.FILES:
+                user.profile_picture = request.FILES['profile_picture']
+                user.save()
+                return redirect('profile', user_id=user.id)
+
+            # Handle full profile update
+            form = UserProfileForm(request.POST, request.FILES, instance=user)
+            if form.is_valid():
+                form.save()
+                return redirect('profile', user_id=user.id)
+        else:
+            return HttpResponseForbidden()
     else:
         form = UserProfileForm(instance=user)
 
     context = {
         'user': user,
+        'profile_picture': profile_picture,
         'tasks_created_count': tasks_created_count,
         'tasks_completed_count': tasks_completed_count,
         'tasks_applied_count': tasks_applied_count if request.user == user else None,
@@ -189,6 +203,7 @@ def profile_view(request, user_id):
     }
 
     return render(request, 'accounts/profile.html', context)
+
 
 
 class ForgotPasswordView(View):

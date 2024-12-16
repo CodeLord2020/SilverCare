@@ -6,6 +6,8 @@ from django.utils.translation import gettext_lazy as _
 from .managers import CustomUserManager
 # Create your models here.
 from cloudinary.models import CloudinaryField
+from pathlib import Path
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 
@@ -88,7 +90,7 @@ class User(AbstractUser):
         """
         return (
             self.profile_picture.url if self.profile_picture 
-            else 'path/to/default/profile/image.png'
+            else "/static/img/hero.jpg"
         )
 
     # def is_elder(self):
