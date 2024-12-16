@@ -1,86 +1,170 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load widget_tweaks %}
 
 {% block title %}User Profile{% endblock %}
 
 {% block content %}
-<div class="container my-4">
-    <div class="row">
-        <!-- Profile Section -->
-        <div class="col-md-4 text-center">
-            <!-- Profile Picture -->
-            <div class="position-relative">
-                <img src="{{ user.profile_picture.url }}" alt="Profile Picture" class="rounded-circle img-fluid" width="200" height="200">
-                {% if request.user == user %}
-                <form method="post" enctype="multipart/form-data" id="profile-pic-form">
-                    {% csrf_token %}
-                    <label for="profile-picture" class="position-absolute bottom-0 end-0">
-                        <i class="fas fa-edit text-primary fs-5"></i>
-                    </label>
-                    <input type="file" name="profile_picture" id="profile-picture" class="d-none" onchange="document.getElementById('profile-pic-form').submit();">
-                </form>
-                {% endif %}
-            </div>
-            <h3 class="mt-3">{{ user.first_name }} {{ user.last_name }}</h3>
-            <p class="text-muted">{{ user.email }}</p>
-            <p>{{ user.address|default:"Address not provided" }}</p>
-        </div>
+<style>
+    .profile-header {
+        background: linear-gradient(135deg, #4e73df, #224abe);
+        color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        padding: 30px 20px;
+        margin-bottom: 30px;
+    }
+    .profile-pic-container {
+        position: relative;
+        display: inline-block;
+        border: 5px solid white;
+        border-radius: 50%;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    .profile-pic-container img {
+        border-radius: 50%;
+    }
+    .edit-icon {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        background: #f8f9fa;
+        border-radius: 50%;
+        padding: 6px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+    label {
+    display: inline-block;
+    font-weight: bold;
+    padding-left: 1rem;
+    }
+    .form-control {
+    border-radius: 15px;
+    padding-left: 2.5rem;
+    }
+    .stats-card {
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    }
+    .stats-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+    .form-section {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    .profile-details {
+        background: rgb(238, 230, 230);
+        border-radius: 10px;
+        padding: 2rem;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
 
-        <!-- Profile Stats -->
-        <div class="col-md-8">
-            <div class="row g-3">
-                <!-- Total Tasks Created -->
-                <div class="col-sm-6">
-                    <div class="card text-center shadow">
+</style>
+
+<div class="container my-5">
+    <!-- Profile Header -->
+    <div class="profile-header text-center">
+        <div class="profile-pic-container">
+            <img src="{{ profile_picture }}" alt="Profile Picture" class="img-fluid" width="150" height="150">
+            {% if request.user == user %}
+            <form method="post" enctype="multipart/form-data" action="{% url 'profile' user.pk %}" id="profile-pic-form">
+                {% csrf_token %}
+                <label for="profile-picture" class="edit-icon">
+                    <i class="fas fa-camera text-primary"></i>
+                </label>
+                <input type="file" name="profile_picture" id="profile-picture" class="d-none" onchange="document.getElementById('profile-pic-form').submit();">
+            </form>
+            {% endif %}
+        </div>
+        <h2 class="mt-3">{{ user.first_name }} {{ user.last_name }}</h2>
+        <p class="mb-0"><i class="fas fa-envelope me-2"></i>{{ user.email }}</p>
+        <p class="mt-1"><i class="fas fa-map-marker-alt me-2"></i>{{ user.address|default:"Address not provided" }}</p>
+    </div>
+
+    <div class="row g-4">
+        <!-- Stats Section -->
+        <div class="col-lg-8">
+            <div class="row g-4">
+                <!-- Tasks Created -->
+                <div class="col-md-6">
+                    <div class="card stats-card border-0 shadow-sm text-center">
                         <div class="card-body">
-                            <h5 class="card-title">Tasks Created</h5>
-                            <p class="card-text fs-4">{{ tasks_created_count }}</p>
+                            <h5 class="text-muted">Tasks Created</h5>
+                            <h2 class="fw-bold text-primary">{{ tasks_created_count }}</h2>
                         </div>
                     </div>
                 </div>
                 <!-- Average Rating -->
-                <div class="col-sm-6">
-                    <div class="card text-center shadow">
+                <div class="col-md-6">
+                    <div class="card stats-card border-0 shadow-sm text-center">
                         <div class="card-body">
-                            <h5 class="card-title">Average Rating</h5>
-                            <p class="card-text fs-4">{{ average_rating|floatformat:1|default:"0.0" }}</p>
+                            <h5 class="text-muted">Average Rating</h5>
+                            <h2 class="fw-bold text-warning">{{ average_rating|floatformat:1|default:"0.0" }}</h2>
                         </div>
                     </div>
                 </div>
-                <!-- Total Tasks Completed -->
-                <div class="col-sm-6">
-                    <div class="card text-center shadow">
+                <!-- Tasks Completed -->
+                <div class="col-md-6">
+                    <div class="card stats-card border-0 shadow-sm text-center">
                         <div class="card-body">
-                            <h5 class="card-title">Tasks Completed</h5>
-                            <p class="card-text fs-4">{{ tasks_completed_count }}</p>
+                            <h5 class="text-muted">Tasks Completed</h5>
+                            <h2 class="fw-bold text-success">{{ tasks_completed_count }}</h2>
                         </div>
                     </div>
                 </div>
-                <!-- Total Applied For -->
+                <!-- Tasks Applied For -->
                 {% if request.user == user %}
-                <div class="col-sm-6">
-                    <div class="card text-center shadow">
+                <div class="col-md-6">
+                    <div class="card stats-card border-0 shadow-sm text-center">
                         <div class="card-body">
-                            <h5 class="card-title">Tasks Applied For</h5>
-                            <p class="card-text fs-4">{{ tasks_applied_count }}</p>
+                            <h5 class="text-muted">Tasks Applied For</h5>
+                            <h2 class="fw-bold text-info">{{ tasks_applied_count }}</h2>
                         </div>
                     </div>
                 </div>
                 {% endif %}
             </div>
-
-            <!-- Editable Fields -->
-            {% if request.user == user %}
-            <div class="mt-4">
-                <h5>Profile Information</h5>
-                <form method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <button type="submit" class="btn btn-primary">Save Changes</button>
-                </form>
-            </div>
-            {% endif %}
         </div>
+
+        <!-- Editable Profile Form -->
+        {% if request.user == user %}
+                <div class="col-12 mt-4">
+                    <div class="profile-details">
+                        <h4 class="mb-4">Edit Profile Information</h4>
+                        <form method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    {{ form.first_name.label_tag }}
+                                    {{ form.first_name|add_class:'form-control' }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ form.last_name.label_tag }}
+                                    {{ form.last_name|add_class:'form-control' }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ form.email.label_tag }}
+                                    {{ form.email|add_class:'form-control' }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ form.phone_number.label_tag }}
+                                    {{ form.phone_number|add_class:'form-control' }}
+                                </div>
+                                <div class="col-12 mb-3">
+                                    {{ form.address.label_tag }}
+                                    {{ form.address|add_class:'form-control' }}
+                                </div>
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-primary btn-lg w-100">Update Profile</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                {% endif %}
     </div>
 </div>
 {% endblock %}
