@@ -10,7 +10,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.core.exceptions import ValidationError
 from django.contrib import messages
-
+from django.contrib.auth.decorators import login_required
 
 
 # Task List View (Elder View - Only their tasks)
@@ -292,3 +292,69 @@ class ReviewCreateView(LoginRequiredMixin, View):
                 review.save()
                 return redirect("tasks:task_detail", pk=task.id)
         return redirect("tasks:task_detail", pk=task.id)
+
+
+
+
+@login_required
+def accept_application(request, application_id):
+    application = get_object_or_404(TaskApplication, id=application_id)
+    
+    if request.user != application.task.elder:
+        messages.error(request, "You are not authorized to accept this application.")
+        return redirect('task_detail', task_id=application.task.id)
+    
+    try:
+        application.accept()
+        messages.success(request, "Application accepted successfully.")
+    except ValueError as e:
+        messages.error(request, str(e))
+    return redirect('task_detail', task_id=application.task.id)
+
+
+@login_required
+def reject_application(request, application_id):
+    application = get_object_or_404(TaskApplication, id=application_id)
+    
+    if request.user != application.task.elder:
+        messages.error(request, "You are not authorized to reject this application.")
+        return redirect('task_detail', task_id=application.task.id)
+    
+    try:
+        application.reject()
+        messages.success(request, "Application rejected successfully.")
+    except ValueError as e:
+        messages.error(request, str(e))
+    return redirect('task_detail', task_id=application.task.id)
+
+
+@login_required
+def withdraw_application(request, application_id):
+    application = get_object_or_404(TaskApplication, id=application_id)
+    
+    if request.user != application.helper:
+        messages.error(request, "You are not authorized to withdraw this application.")
+        return redirect('task_detail', task_id=application.task.id)
+    
+    try:
+        application.withdraw()
+        messages.success(request, "Application withdrawn successfully.")
+    except ValueError as e:
+        messages.error(request, str(e))
+    return redirect('task_detail', task_id=application.task.id)
+
+
+@login_required
+def mark_task_complete(request, task_id):
+    task = get_object_or_404(Task, id=task_id)
+    
+    if request.user != task.elder:
+        messages.error(request, "You are not authorized to mark this task as complete.")
+        return redirect('task_detail', task_id=task.id)
+    
+    try:
+        task.mark_as_completed(request.user)
+        messages.success(request, "Task marked as completed.")
+    except ValueError as e:
+        messages.error(request, str(e))
+    return redirect('task_detail', task_id=task.id)
