@@ -171,8 +171,11 @@
                                     </span>
                                     {% if user.is_authenticated and user == task.elder %}
                                         <div class="btn-group">
-                                            <a href="#" class="btn btn-sm btn-outline-success">Accept</a>
-                                            <a href="#" class="btn btn-sm btn-outline-danger">Reject</a>
+                                            <div class="btn-group">
+                                                <a href="{% url 'accept_application' application.id %}" class="btn btn-sm btn-outline-success">Accept</a>
+                                                <a href="{% url 'reject_application' application.id %}" class="btn btn-sm btn-outline-danger">Reject</a>
+                                            </div>
+                                            
                                         </div>
                                     {% endif %}
                                 </div>
