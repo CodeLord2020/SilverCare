@@ -81,7 +81,16 @@ class TaskDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         tasktype = self.object.task_type.name
-        context["applications"] = self.object.applications.all()
+        
+        # Filter applications based on status and user permissions
+        if self.request.user.is_superuser:
+            # Admin sees all applications
+            applications = self.object.applications.all()
+        else:
+            # Regular users don't see withdrawn applications
+            applications = self.object.applications.exclude(status='Withdrawn')
+        
+        context["applications"] = applications
         context["review_form"] = ReviewForm()  # If the task is completed, elder can leave a review
         context["medias"] = [media for media in self.object.taskmedia.all()]
         context['page_topic'] = f"CATEGORY: {tasktype}"
