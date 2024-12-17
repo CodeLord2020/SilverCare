@@ -79,6 +79,22 @@
                                     </span>
                                 </p>
                             </div>
+                            {% if user.is_authenticated and user == task.elder %}
+                                <div class="mb-4">
+                                    <h5 class="mb-3">Manage Task Status</h5>
+                                    <form method="POST" action="{% url 'tasks:mark_task_complete' task.id %}">
+                                        {% csrf_token %}
+                                        {% if task.status != 'Completed' %}
+                                            <button type="submit" class="btn btn-success btn-sm">
+                                                <i class="fas fa-check me-1"></i> Mark as Completed
+                                            </button>
+                                        {% else %}
+                                            <span class="badge bg-info">Task is already completed</span>
+                                        {% endif %}
+                                    </form>
+                                </div>
+                            {% endif %}
+
                         </div>
                     </div>
 
@@ -158,9 +174,10 @@
                                                 {{ application.helper.name|first }}
                                             </div>
                                         {% endif %}
-                                        <a href="{% url 'home'  %}" class="text-decoration-none text-dark">
+                                        <a href="{% url 'profile' application.helper.id %}" class="text-decoration-none text-dark">
                                             <h6 class="mb-0">{{ application.helper.name }}</h6>
                                         </a>
+                                        
                                     </div>
                                     <span class="badge
                                         {% if application.status == 'Pending' %}bg-warning
@@ -169,15 +186,21 @@
                                         {% else %}bg-secondary{% endif %}">
                                         {{ application.get_status_display }}
                                     </span>
-                                    {% if user.is_authenticated and user == task.elder %}
-                                        <div class="btn-group">
-                                            <div class="btn-group">
-                                                <a href="{% url 'accept_application' application.id %}" class="btn btn-sm btn-outline-success">Accept</a>
-                                                <a href="{% url 'reject_application' application.id %}" class="btn btn-sm btn-outline-danger">Reject</a>
-                                            </div>
-                                            
-                                        </div>
-                                    {% endif %}
+                                    <div class="btn-group">
+                                        {% if user.is_authenticated and user == task.elder %}
+                                            {% if application.status != 'Accepted' %}
+                                                <a href="{% url 'tasks:accept_application' application.id %}" class="btn btn-sm btn-outline-success">Accept</a>
+                                            {% else %}
+                                                <a href="" class="btn btn-sm btn-outline-success ">Accept</a>
+                                            {% endif %}
+                                            <a href="{% url 'tasks:reject_application' application.id %}" class="btn btn-sm btn-outline-danger">Reject</a>
+                                        {% elif user.is_authenticated and user == application.helper %}
+                                            {% if application.status != 'Withdrawn' %}
+                                                <a href="{% url 'tasks:withdraw_application' application.id %}" class="btn btn-sm btn-outline-warning">Withdraw</a>
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
+                                    
                                 </div>
                             {% endfor %}
                         </div>
