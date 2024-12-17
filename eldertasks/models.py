@@ -131,6 +131,20 @@ class Task(models.Model):
             self.slug = unique_slug
 
         super().save(*args, **kwargs)
+        
+
+    def mark_as_completed(self, user):
+        """
+        Mark the task as completed, allowed only by the elder.
+        """
+        if user != self.elder:
+            raise PermissionError("Only the elder who created the task can mark it as completed.")
+        
+        if self.status != self.Status.IN_PROGRESS:
+            raise ValueError("Only tasks in progress can be marked as completed.")
+
+        self.status = self.Status.COMPLETED
+        self.save()
 
     # @property
     # def is_urgent(self):
@@ -253,6 +267,26 @@ class TaskApplication(models.Model):
         self.status = self.Status.ACCEPTED
         self.save()
 
+        self.task.status = self.task.Status.IN_PROGRESS
+        self.task.save()
+
+
+    def withdraw(self):
+        """
+        Withdraw the application and update the task status if needed.
+        """
+        if self.status != self.Status.ACCEPTED:
+            raise ValueError("Only accepted applications can be withdrawn.")
+
+        self.status = self.Status.WITHDRAWN
+        self.save()
+
+        # If there are no accepted applications, set task status to OPEN
+        if not self.task.applications.filter(status=self.Status.ACCEPTED).exists():
+            self.task.status = self.task.Status.OPEN
+            self.task.save()
+
+
     def reject(self, reason=None):
         """
         Method to reject the application with optional reason
@@ -262,6 +296,7 @@ class TaskApplication(models.Model):
         
         self.status = self.Status.REJECTED
         self.save()
+        
 
 
 
