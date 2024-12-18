@@ -163,52 +163,69 @@
                     </div> -->
                 
                     {% if applications %}
-                        <div class="list-group list-group-flush">
-                            {% for application in applications %}
-                                <div class="list-group-item d-flex justify-content-between align-items-center">
-                                    <div class="d-flex align-items-center">
-                                        {% if application.helper.profile_picture %}
-                                            <img src="{{ application.helper.profile_picture.url }}" alt="{{ application.helper.name }}" class="rounded-circle me-2" width="40" height="40">
-                                        {% else %}
-                                            <div class="rounded-circle bg-secondary text-white d-flex justify-content-center align-items-center me-2" style="width: 40px; height: 40px;">
-                                                {{ application.helper.name|first }}
-                                            </div>
-                                        {% endif %}
-                                        <a href="{% url 'profile' application.helper.id %}" class="text-decoration-none text-dark">
-                                            <h6 class="mb-0">{{ application.helper.name }}</h6>
-                                        </a>
-                                        
-                                    </div>
-                                    <span class="badge
+                    {% if applications %}
+                    <div class="list-group list-group-flush">
+                        {% for application in applications %}
+                            <div class="list-group-item d-flex align-items-center justify-content-between">
+                                <!-- Left Section: Profile Picture and Name -->
+                                <div class="d-flex align-items-center flex-shrink-0" style="min-width: 250px;">
+                                    {% if application.helper.profile_picture %}
+                                        <img src="{{ application.helper.profile_picture.url }}" 
+                                             alt="{{ application.helper.name }}" 
+                                             class="rounded-circle me-2 flex-shrink-0" 
+                                             width="40" height="40">
+                                    {% else %}
+                                        <div class="rounded-circle bg-secondary text-white d-flex justify-content-center align-items-center me-2" 
+                                             style="width: 40px; height: 40px;">
+                                            {{ application.helper.name|first }}
+                                        </div>
+                                    {% endif %}
+                                    <a href="{% url 'profile' application.helper.id %}" 
+                                       class="text-decoration-none text-dark text-truncate">
+                                        <h6 class="mb-0 text-truncate">{{ application.helper.name }}</h6>
+                                    </a>
+                                </div>
+                
+                                <!-- Middle Section: Status -->
+                                <div class="text-center flex-grow-1">
+                                    <span class="badge 
                                         {% if application.status == 'Pending' %}bg-warning
                                         {% elif application.status == 'Accepted' %}bg-success
                                         {% elif application.status == 'Rejected' %}bg-danger
                                         {% else %}bg-secondary{% endif %}">
                                         {{ application.get_status_display }}
                                     </span>
-                                    <div class="btn-group">
-                                        {% if user.is_authenticated and user == task.elder %}
-                                            {% if application.status != 'Accepted' %}
-                                                <a href="{% url 'tasks:accept_application' application.id %}" class="btn btn-sm btn-outline-success">Accept</a>
-                                            {% else %}
-                                                <a href="" class="btn btn-sm btn-outline-success ">Accept</a>
-                                            {% endif %}
-                                            <a href="{% url 'tasks:reject_application' application.id %}" class="btn btn-sm btn-outline-danger">Reject</a>
-                                        {% elif user.is_authenticated and user == application.helper %}
-                                            {% if application.status != 'Withdrawn' %}
-                                                <a href="{% url 'tasks:withdraw_application' application.id %}" class="btn btn-sm btn-outline-warning">Withdraw</a>
-                                            {% endif %}
-                                        {% endif %}
-                                    </div>
-                                    
                                 </div>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        <div class="text-center py-4">
-                            <p class="text-muted mb-0">No applications yet</p>
-                        </div>
-                    {% endif %}
+                
+                                <!-- Right Section: Action Buttons -->
+                                <div class="d-flex flex-shrink-0 justify-content-end">
+                                    {% if user.is_authenticated and user == task.elder %}
+                                        {% if application.status != 'Accepted' %}
+                                            <a href="{% url 'tasks:accept_application' application.id %}" 
+                                               class="btn btn-sm btn-outline-success me-1">Accept</a>
+                                        {% else %}
+                                            <a href="#" onclick="return false;" 
+                                               class="btn btn-sm btn-outline-success me-1">Accept</a>
+                                        {% endif %}
+                                        <a href="{% url 'tasks:reject_application' application.id %}" 
+                                           class="btn btn-sm btn-outline-danger me-1">Reject</a>
+                                    {% elif user.is_authenticated and user == application.helper %}
+                                        {% if application.status != 'Withdrawn' %}
+                                            <a href="{% url 'tasks:withdraw_application' application.id %}" 
+                                               class="btn btn-sm btn-outline-warning">Withdraw</a>
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <p class="text-muted mb-0">No applications yet</p>
+                    </div>
+                {% endif %}
+                {% endif %}
+
                 </div>
             </div>
         </div>
