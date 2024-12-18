@@ -135,42 +135,55 @@
         </div>
     </div>
     
+    {% if request.user == user %}
+    <div class="col-12 mt-4">
+        <!-- Edit Button -->
+        <div class="d-flex justify-content-end">
+            <button id="edit-profile-btn" class="btn btn-primary ">Edit Profile</button>
+        </div>
+
         <!-- Editable Profile Form -->
-        {% if request.user == user %}
-                <div class="col-12 mt-4">
-                    <div class="profile-details">
-                        <h4 class="mb-4">Edit Profile Information</h4>
-                        <form method="post" enctype="multipart/form-data">
-                            {% csrf_token %}
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    {{ form.first_name.label_tag }}
-                                    {{ form.first_name|add_class:'form-control' }}
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    {{ form.last_name.label_tag }}
-                                    {{ form.last_name|add_class:'form-control' }}
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    {{ form.email.label_tag }}
-                                    {{ form.email|add_class:'form-control' }}
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    {{ form.phone_number.label_tag }}
-                                    {{ form.phone_number|add_class:'form-control' }}
-                                </div>
-                                <div class="col-12 mb-3">
-                                    {{ form.address.label_tag }}
-                                    {{ form.address|add_class:'form-control' }}
-                                </div>
-                                <div class="col-12">
-                                    <button type="submit" class="btn btn-primary btn-lg w-100">Update Profile</button>
-                                </div>
-                            </div>
-                        </form>
+        <div id="profile-edit-form" class="profile-details mt-3 d-none">
+            <h4 class="mb-4">Edit Profile Information</h4>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        {{ form.first_name.label_tag }}
+                        {{ form.first_name|add_class:'form-control' }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        {{ form.last_name.label_tag }}
+                        {{ form.last_name|add_class:'form-control' }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        {{ form.email.label_tag }}
+                        {{ form.email|add_class:'form-control' }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        {{ form.phone_number.label_tag }}
+                        {{ form.phone_number|add_class:'form-control' }}
+                    </div>
+                    <div class="col-12 mb-3">
+                        {{ form.address.label_tag }}
+                        {{ form.address|add_class:'form-control' }}
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary btn-lg w-100">Update Profile</button>
                     </div>
                 </div>
-                {% endif %}
+            </form>
+        </div>
+    </div>
+{% endif %}
+
+<script>
+    // Toggle the visibility of the edit profile form
+    document.getElementById('edit-profile-btn').addEventListener('click', function () {
+        var form = document.getElementById('profile-edit-form');
+        form.classList.toggle('d-none'); // Add or remove the d-none class
+    });
+</script>
     </div>
 </div>
 {% endblock %}
