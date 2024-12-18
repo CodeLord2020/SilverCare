@@ -84,12 +84,12 @@
         <p class="mt-1"><i class="fas fa-map-marker-alt me-2"></i>{{ user.address|default:"Address not provided" }}</p>
     </div>
 
-    <div class="row g-4">
+    <div class="row g-4 justify-content-center">
         <!-- Stats Section -->
         <div class="col-lg-8">
             <div class="row g-4">
                 <!-- Tasks Created -->
-                <div class="col-md-6">
+                <div class="col-lg-4 col-md-6">
                     <div class="card stats-card border-0 shadow-sm text-center">
                         <div class="card-body">
                             <h5 class="text-muted">Tasks Created</h5>
@@ -97,17 +97,21 @@
                         </div>
                     </div>
                 </div>
+    
                 <!-- Average Rating -->
-                <div class="col-md-6">
+                <div class="col-lg-4 col-md-6">
                     <div class="card stats-card border-0 shadow-sm text-center">
                         <div class="card-body">
                             <h5 class="text-muted">Average Rating</h5>
-                            <h2 class="fw-bold text-warning">{{ average_rating|floatformat:1|default:"0.0" }}</h2>
+                            <h2 class="fw-bold text-warning">
+                                {{ average_rating|floatformat:1|default:"0.0" }}
+                            </h2>
                         </div>
                     </div>
                 </div>
+    
                 <!-- Tasks Completed -->
-                <div class="col-md-6">
+                <div class="col-lg-4 col-md-6">
                     <div class="card stats-card border-0 shadow-sm text-center">
                         <div class="card-body">
                             <h5 class="text-muted">Tasks Completed</h5>
@@ -115,9 +119,10 @@
                         </div>
                     </div>
                 </div>
+    
                 <!-- Tasks Applied For -->
                 {% if request.user == user %}
-                <div class="col-md-6">
+                <div class="col-lg-4 col-md-6 mx-auto">
                     <div class="card stats-card border-0 shadow-sm text-center">
                         <div class="card-body">
                             <h5 class="text-muted">Tasks Applied For</h5>
@@ -128,7 +133,8 @@
                 {% endif %}
             </div>
         </div>
-
+    </div>
+    
         <!-- Editable Profile Form -->
         {% if request.user == user %}
                 <div class="col-12 mt-4">
