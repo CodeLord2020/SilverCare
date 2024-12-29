@@ -85,7 +85,7 @@
                                     <form method="POST" action="{% url 'tasks:mark_task_complete' task.id %}">
                                         {% csrf_token %}
                                         {% if task.status != 'Completed' %}
-                                            <button type="submit" class="btn btn-success btn-sm">
+                                            <button type="submit" class="btn btn-warning btn-sm">
                                                 <i class="fas fa-check me-1"></i> Mark as Completed
                                             </button>
                                         {% else %}
