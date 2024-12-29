@@ -22,6 +22,6 @@ urlpatterns = [
     path('applications/<uuid:application_id>/accept/', views.accept_application, name='accept_application'),
     path('applications/<uuid:application_id>/reject/', views.reject_application, name='reject_application'),
     path('applications/<uuid:application_id>/withdraw/', views.withdraw_application, name='withdraw_application'),
-    path('tasks/<uuid:task_id>/complete/', views.mark_task_complete, name='mark_task_complete'),
+    path('<uuid:task_id>/complete/', views.mark_task_complete, name='mark_task_complete'),
     
 ]
