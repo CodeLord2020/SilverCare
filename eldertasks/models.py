@@ -146,6 +146,10 @@ class Task(models.Model):
         self.status = self.Status.COMPLETED
         self.save()
 
+        for application in self.applications.filter(status=self.Status.ACCEPTED):
+            application.status = self.Status.COMPLETED
+            application.save()
+
     # @property
     # def is_urgent(self):
     #     return self.is_urgent
@@ -188,6 +192,7 @@ class TaskApplication(models.Model):
         ACCEPTED = 'Accepted', 'Accepted'
         REJECTED = 'Rejected', 'Rejected'
         WITHDRAWN = 'Withdrawn', 'Withdrawn'
+        COMPLETED = 'Completed', 'Completed'
 
     id = models.UUIDField(
         primary_key=True, 
