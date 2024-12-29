@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block title %}{{ task.title }}{% endblock %}
+{% load widget_tweaks %}
 {% block content %}
 <div class="container py-5">
     <div class="row">
@@ -232,31 +233,51 @@
     </div>
 
     <!-- Review Section -->
-    {% if task.status == "Completed" %}
-        <div class="row mt-5">
-            <div class="col-12">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-header bg-info text-white">
-                        <h3 class="mb-0">Leave a Review</h3>
-                    </div>
-                    <div class="card-body">
-                        <form method="post" action="{% url 'tasks:task_review' task.id %}">
-                            {% csrf_token %}
-                            <div class="mb-3">
-                                {{ review_form.rating.label_tag }}
-                                {{ review_form.rating }}
+    {% load widget_tweaks %}
+
+{% if task.status == "Completed" %}
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="card shadow-lg border-0 rounded-3">
+            <div class="card-header bg-info text-white rounded-3">
+                <h3 class="mb-0">Leave a Review</h3>
+            </div>
+            <div class="card-body">
+                <h5 class="mb-3">Your feedback is valuable to us. Please rate your experience and leave a comment below:</h5>
+                <form method="post" action="{% url 'tasks:task_review' task.id %}">
+                    {% csrf_token %}
+                    
+                    <!-- Rating Section -->
+                    <div class="mb-4">
+                        <label for="rating" class="form-label">{{ review_form.rating.label }}</label>
+                        <div class="d-flex justify-content-start align-items-center">
+                            <!-- Rating Stars -->
+                            <div class="stars">
+                                {% for i in range_5 %}
+                                    <input type="radio" name="rating" id="star{{ i }}" value="{{ i }}" {% if review_form.rating.value == i %}checked{% endif %} />
+                                    <label for="star{{ i }}" class="star" style="font-size: 1.5rem; cursor: pointer;">&#9733;</label>
+                                {% endfor %}
                             </div>
-                            <div class="mb-3">
-                                {{ review_form.comment.label_tag }}
-                                {{ review_form.comment }}
-                            </div>
-                            <button type="submit" class="btn btn-primary">Submit Review</button>
-                        </form>
+                        </div>
                     </div>
-                </div>
+                    
+                    
+                    
+                    <!-- Comment Section -->
+                    <div class="mb-4">
+                        <label for="comment" class="form-label rounded-1">{{ review_form.comment.label }}</label>
+                        {% render_field review_form.comment class="form-control" %}
+                        <div class="form-text text-muted mt-2">Optional: Leave any additional comments or suggestions.</div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg w-100">Submit Review</button>
+                </form>
             </div>
         </div>
-    {% endif %}
+    </div>
+</div>
+{% endif %}
+
 </div>
 
 <style>
@@ -267,5 +288,25 @@
         border-top-left-radius: 1rem !important;
         border-top-right-radius: 1rem !important;
     }
+    .stars {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    }
+
+    input[type="radio"] {
+        display: none;
+    }
+
+    .star {
+        color: #ddd;
+        transition: color 0.2s;
+    }
+
+    input[type="radio"]:checked ~ .star,
+    input[type="radio"]:hover ~ .star {
+        color: #ffc107;
+    }
+
 </style>
 {% endblock %}
