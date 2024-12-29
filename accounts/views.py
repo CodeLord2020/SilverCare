@@ -178,6 +178,7 @@ def profile_view(request, user_id):
     tasks_created_count = Task.objects.filter(elder=user).count()
     tasks_completed_count = Task.objects.filter(elder=user, status='Completed').count()
     completed_tasks_count = TaskApplication.objects.filter(helper=user, status=TaskApplication.Status.COMPLETED).count()
+    tasks_completed_count += completed_tasks_count
     tasks_applied_count = TaskApplication.objects.filter(helper=user).count()
     average_rating = Review.objects.filter(helper=user).aggregate(Avg('rating'))['rating__avg']
 
@@ -205,7 +206,6 @@ def profile_view(request, user_id):
         'page_topic' : "PROFILE",
         'profile_picture': profile_picture,
         'tasks_created_count': tasks_created_count,
-        'completed_tasks_count': completed_tasks_count,
         'tasks_completed_count': tasks_completed_count,
         'tasks_applied_count': tasks_applied_count if request.user == user else None,
         'average_rating': average_rating,

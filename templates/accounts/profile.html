@@ -114,21 +114,12 @@
                 <div class="col-lg-4 col-md-6">
                     <div class="card stats-card border-0 shadow-sm text-center">
                         <div class="card-body">
-                            <h5 class="text-muted">Tasks Completed (Elder)</h5>
+                            <h5 class="text-muted">Tasks Completed</h5>
                             <h2 class="fw-bold text-success">{{ tasks_completed_count }}</h2>
                         </div>
                     </div>
                 </div> 
 
-                <div class="col-lg-4 col-md-6">
-                    <div class="card stats-card border-0 shadow-sm text-center">
-                        <div class="card-body">
-                            <h5 class="text-muted">Tasks Completed (Helper)</h5>
-                            <h2 class="fw-bold text-success">{{ completed_tasks_count }}</h2>
-                        </div>
-                    </div>
-                </div>
-    
                 <!-- Tasks Applied For -->
                 {% if request.user == user %}
                 <div class="col-lg-4 col-md-6 mx-auto">
