@@ -93,9 +93,9 @@ class TaskDetailView(DetailView):
         context["applications"] = applications
         context["review_form"] = ReviewForm()  # If the task is completed, elder can leave a review
         context["medias"] = [media for media in self.object.taskmedia.all()]
+        context["range_5"] =  range(1, 6)
         context['page_topic'] = f"CATEGORY: {tasktype}"
         return context
-
 
 
 class TaskCreateView(LoginRequiredMixin, CreateView):
