@@ -157,7 +157,7 @@ This project is licensed under the MIT License - see the [LICENSE](https://githu
 
 ## Contact
 
-Your Name - [rasheedbabatunde76@egmailxample.com](mailto:rasheedbabatunde76@gmail.com)
+Adebayo Rasheed - [rasheedbabatunde76@gmail.com](mailto:rasheedbabatunde76@gmail.com)
 
 Project Link: [https://github.com/CodeLord2020/SilverCare](https://github.com/CodeLord2020/SilverCare)
 
