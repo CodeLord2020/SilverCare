@@ -55,3 +55,57 @@ class InboxView(LoginRequiredMixin, ListView):
         return context
     
 
+
+
+
+class ConversationView(LoginRequiredMixin, DetailView):
+    template_name = 'messaging/conversation.html'
+    context_object_name = 'conversation'
+
+    def get_queryset(self):
+        return Conversation.objects.filter(
+            Q(elder=self.request.user) | Q(helper=self.request.user),
+            is_active=True
+        ).select_related('elder', 'helper', 'task')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        # Get messages with pagination
+        messages = self.object.messages.select_related('sender').order_by('-created_at')
+        paginator = Paginator(messages, 50)
+        page = self.request.GET.get('page', 1)
+        context['messages'] = paginator.get_page(page)
+        
+        # Mark messages as read
+        if self.request.user != self.object.messages.last().sender:
+            self.mark_messages_as_read()
+        
+        # Add other participants for UI
+        context['other_participant'] = (
+            self.object.helper if self.request.user == self.object.elder 
+            else self.object.elder
+        )
+        
+        return context
+
+    def mark_messages_as_read(self):
+        unread_messages = self.object.messages.filter(
+            is_read=False
+        ).exclude(
+            sender=self.request.user
+        )
+        
+        unread_messages.update(
+            is_read=True,
+            read_at=timezone.now()
+        )
+        
+        UnreadMessageCounter.objects.filter(
+            conversation=self.object,
+            user=self.request.user
+        ).update(
+            count=0,
+            last_read_at=timezone.now()
+        )
+
