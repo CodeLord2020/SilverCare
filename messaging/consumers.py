@@ -32,22 +32,31 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
-        message = text_data_json['message']
-        
-        # Save message to database
-        saved_message = await self.save_message(message)
-
-        # Send message to room group
-        await self.channel_layer.group_send(
-            self.room_group_name,
-            {
-                'type': 'chat_message',
-                'message': message,
-                'sender_id': str(self.scope['user'].id),
-                'message_id': str(saved_message.id),
-                'timestamp': saved_message.created_at.isoformat()
-            }
-        )
+        if 'type' in text_data_json and text_data_json['type'] == 'typing':
+            # Handle typing indicator
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    'type': 'typing_status',
+                    'user_id': str(self.scope['user'].id),
+                    'is_typing': True
+                }
+            )
+        elif 'message' in text_data_json:
+            # Handle regular message
+            message = text_data_json['message']
+            saved_message = await self.save_message(message)
+            
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    'type': 'chat_message',
+                    'message': message,
+                    'sender_id': str(self.scope['user'].id),
+                    'message_id': str(saved_message.id),
+                    'timestamp': saved_message.created_at.isoformat()
+                }
+            )
 
 
     async def chat_message(self, event):
@@ -59,29 +68,29 @@ class ChatConsumer(AsyncWebsocketConsumer):
             'timestamp': event['timestamp']
         }))
 
-    async def typing_status(self, event):
-        """Send typing status to WebSocket"""
-        await self.send(text_data=json.dumps({
-            'type': 'typing_status',
-            'user_id': event['user_id'],
-            'is_typing': event['is_typing']
-        }))
+    # async def typing_status(self, event):
+    #     """Send typing status to WebSocket"""
+    #     await self.send(text_data=json.dumps({
+    #         'type': 'typing_status',
+    #         'user_id': event['user_id'],
+    #         'is_typing': event['is_typing']
+    #     }))
 
-    async def receive_typing(self, text_data):
-        """Handle typing indicator updates"""
-        try:
-            data = json.loads(text_data)
-            if data.get('type') == 'typing':
-                await self.channel_layer.group_send(
-                    self.room_group_name,
-                    {
-                        'type': 'typing_status',
-                        'user_id': str(self.scope['user'].id),
-                        'is_typing': True
-                    }
-                )
-        except json.JSONDecodeError:
-            pass
+    # async def receive_typing(self, text_data):
+    #     """Handle typing indicator updates"""
+    #     try:
+    #         data = json.loads(text_data)
+    #         if data.get('type') == 'typing':
+    #             await self.channel_layer.group_send(
+    #                 self.room_group_name,
+    #                 {
+    #                     'type': 'typing_status',
+    #                     'user_id': str(self.scope['user'].id),
+    #                     'is_typing': True
+    #                 }
+    #             )
+    #     except json.JSONDecodeError:
+    #         pass
 
     async def message_delivery_status(self, event):
         """Send message delivery status to WebSocket"""
