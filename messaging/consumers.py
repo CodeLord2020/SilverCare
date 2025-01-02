@@ -59,6 +59,38 @@ class ChatConsumer(AsyncWebsocketConsumer):
             'timestamp': event['timestamp']
         }))
 
+    async def typing_status(self, event):
+        """Send typing status to WebSocket"""
+        await self.send(text_data=json.dumps({
+            'type': 'typing_status',
+            'user_id': event['user_id'],
+            'is_typing': event['is_typing']
+        }))
+
+    async def receive_typing(self, text_data):
+        """Handle typing indicator updates"""
+        try:
+            data = json.loads(text_data)
+            if data.get('type') == 'typing':
+                await self.channel_layer.group_send(
+                    self.room_group_name,
+                    {
+                        'type': 'typing_status',
+                        'user_id': str(self.scope['user'].id),
+                        'is_typing': True
+                    }
+                )
+        except json.JSONDecodeError:
+            pass
+
+    async def message_delivery_status(self, event):
+        """Send message delivery status to WebSocket"""
+        await self.send(text_data=json.dumps({
+            'type': 'delivery_status',
+            'message_id': event['message_id'],
+            'status': event['status']
+        }))
+
 
     @database_sync_to_async
     def has_conversation_access(self):
