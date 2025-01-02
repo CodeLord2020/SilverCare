@@ -48,10 +48,13 @@ INSTALLED_APPS = [
     'phonenumber_field',
     'rangefilter',
     "widget_tweaks",
+    'channels',
 
     #local app
     'accounts',
-    'eldertasks'
+    'eldertasks',
+    'messaging',
+
 ]
 
 
