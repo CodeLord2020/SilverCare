@@ -109,3 +109,24 @@ class ConversationView(LoginRequiredMixin, DetailView):
             last_read_at=timezone.now()
         )
 
+
+class MessageSearchView(LoginRequiredMixin, ListView):
+    template_name = 'messaging/search_results.html'
+    context_object_name = 'messages'
+    paginate_by = 20
+
+    def get_queryset(self):
+        query = self.request.GET.get('q', '')
+        if not query:
+            return Message.objects.none()
+
+        return Message.objects.filter(
+            Q(conversation__elder=self.request.user) | 
+            Q(conversation__helper=self.request.user),
+            Q(content__icontains=query) |
+            Q(conversation__task__title__icontains=query)
+        ).select_related(
+            'conversation',
+            'sender',
+            'conversation__task'
+        ).order_by('-created_at')
