@@ -47,4 +47,5 @@ class InboxView(LoginRequiredMixin, ListView):
             )
         ).order_by('-last_message_at')
     
+
     
