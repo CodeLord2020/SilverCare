@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import ListView, DetailView
-from django.db.models import Q, Max, Count, Prefetch
+from django.db.models import Q, Max, Count, Prefetch, Sum
 from django.utils import timezone
 from django.http import JsonResponse
 from django.template.loader import render_to_string
@@ -47,5 +47,11 @@ class InboxView(LoginRequiredMixin, ListView):
             )
         ).order_by('-last_message_at')
     
-
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['total_unread'] = UnreadMessageCounter.objects.filter(
+            user=self.request.user
+        ).aggregate(total=Sum('count'))['total'] or 0
+        return context
     
+
