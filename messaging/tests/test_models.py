@@ -15,13 +15,15 @@ class MessageModelTests(TestCase):
             email='elder@test.com',
             password='testpass123',
             first_name='Elder',
-            last_name='Test'
+            last_name='Test',
+            is_verified = True
         )
         self.helper = User.objects.create_user(
             email='helper@test.com',
             password='testpass123',
             first_name='Helper',
-            last_name='Test'
+            last_name='Test',
+            is_verified = True
         )
         
         # Create task
