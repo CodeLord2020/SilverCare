@@ -40,3 +40,11 @@ def update_conversation_and_counter(sender, instance, created, **kwargs):
         ).update(
             count=models.F('count') + 1
         )
+
+
+
+@receiver(pre_save, sender=Message)
+def update_message_read_status(sender, instance, **kwargs):
+    """Update message read timestamp when marked as read"""
+    if instance.is_read and not instance.read_at:
+        instance.read_at = timezone.now()
