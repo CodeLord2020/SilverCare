@@ -1,0 +1,116 @@
+
+{% extends 'messaging/inbox.html' %}
+{% load static %}
+
+{% block chat_content %}
+<div class="w-full lg:w-2/3">
+    <div class="bg-white rounded-lg shadow-md flex flex-col h-[calc(100vh-2rem)]">
+        <!-- Chat Header -->
+        <div class="p-4 border-b flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <img src="{{ other_participant.profile_picture_url }}" 
+                     alt="{{ other_participant.name }}"
+                     class="w-10 h-10 rounded-full">
+                <div>
+                    <h3 class="font-medium">{{ other_participant.name }}</h3>
+                    <p class="text-sm text-gray-500">{{ conversation.task.title }}</p>
+                </div>
+            </div>
+            <div class="text-gray-500">
+                {% if conversation.task.status == 'Completed' %}
+                    <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">
+                        Completed
+                    </span>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Messages Area -->
+        <div class="flex-1 overflow-y-auto p-4" id="messages-container">
+            {% for message in messages %}
+                <div class="mb-4 {% if message.sender == request.user %}ml-auto{% endif %} max-w-[70%]">
+                    <div class="{% if message.sender == request.user %}bg-blue-500 text-white{% else %}bg-gray-100 text-gray-900{% endif %} rounded-lg p-3">
+                        {{ message.content }}
+                    </div>
+                    <div class="text-xs text-gray-500 mt-1 {% if message.sender == request.user %}text-right{% endif %}">
+                        {{ message.created_at|time:"g:i A" }}
+                        {% if message.is_read and message.sender == request.user %}
+                            <span class="ml-1 text-blue-500">
+                                <i class="fas fa-check-double"></i>
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Message Input -->
+        {% if not conversation.task.status == 'Completed' %}
+            <div class="border-t p-4">
+                <form id="message-form" class="flex space-x-2">
+                    <input type="text" 
+                           id="message-input"
+                           placeholder="Type your message..."
+                           class="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <button type="submit" 
+                            class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition duration-150">
+                        Send
+                    </button>
+                </form>
+            </div>
+        {% else %}
+            <div class="border-t p-4 bg-gray-50 text-center text-gray-500">
+                This conversation is closed as the task has been completed
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+    const conversationId = '{{ conversation.id }}';
+    const chatSocket = new WebSocket(
+        'ws://' + window.location.host + '/ws/chat/' + conversationId + '/'
+    );
+
+    const messagesContainer = document.getElementById('messages-container');
+    const messageForm = document.getElementById('message-form');
+    const messageInput = document.getElementById('message-input');
+
+    chatSocket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+        appendMessage(data);
+    };
+
+    messageForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const message = messageInput.value.trim();
+        if (message) {
+            chatSocket.send(JSON.stringify({
+                'message': message
+            }));
+            messageInput.value = '';
+        }
+    });
+
+    function appendMessage(data) {
+        const isCurrentUser = data.sender_id === '{{ request.user.id }}';
+        const messageHtml = `
+            <div class="mb-4 ${isCurrentUser ? 'ml-auto' : ''} max-w-[70%]">
+                <div class="${isCurrentUser ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-900'} rounded-lg p-3">
+                    ${data.message}
+                </div>
+                <div class="text-xs text-gray-500 mt-1 ${isCurrentUser ? 'text-right' : ''}">
+                    ${new Date(data.timestamp).toLocaleTimeString([], {hour: 'numeric', minute: '2-digit'})}
+                </div>
+            </div>
+        `;
+        messagesContainer.insertAdjacentHTML('beforeend', messageHtml);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    // Auto-scroll to bottom on load
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+</script>
+{% endblock %}
+{% endblock %}
