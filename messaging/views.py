@@ -41,9 +41,11 @@ class InboxView(LoginRequiredMixin, ListView):
             unread_count=Count(
                 'messages',
                 filter=Q(
-                    messages__is_read=False,
-                    messages__sender__is_not=self.request.user
+                    messages__is_read=False
+                ) & ~Q(
+                    messages__sender=self.request.user
                 )
+                    # messages__sender__is_not=self.request.user
             )
         ).order_by('-last_message_at')
     
@@ -78,8 +80,9 @@ class ConversationView(LoginRequiredMixin, DetailView):
         context['messages'] = paginator.get_page(page)
         
         # Mark messages as read
-        if self.request.user != self.object.messages.last().sender:
-            self.mark_messages_as_read()
+        if messages:
+            if self.request.user != self.object.messages.last().sender:
+                self.mark_messages_as_read()
         
         # Add other participants for UI
         context['other_participant'] = (
