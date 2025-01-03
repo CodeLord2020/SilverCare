@@ -1,66 +1,129 @@
-
 {% extends 'messaging/inbox.html' %}
 {% load static %}
 
 {% block chat_content %}
 <div class="w-full lg:w-2/3">
     <div class="bg-white rounded-lg shadow-md flex flex-col h-[calc(100vh-2rem)]">
-        <!-- Chat Header -->
-        <div class="p-4 border-b flex justify-between items-center">
-            <div class="flex items-center space-x-3">
-                <img src="{{ other_participant.profile_picture_url }}" 
-                     alt="{{ other_participant.name }}"
-                     class="w-10 h-10 rounded-full">
+        <!-- Enhanced Chat Header -->
+        <div class="p-4 border-b flex justify-between items-center bg-white sticky top-0 z-10">
+            <div class="flex items-center space-x-4">
+                <div class="relative">
+                    <img src="{{ other_participant.profile_picture_url }}" 
+                         alt="{{ other_participant.name }}"
+                         class="w-12 h-12 rounded-full border-2 border-blue-500 object-cover">
+                    <span class="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-green-500 border-2 border-white"></span>
+                </div>
                 <div>
-                    <h3 class="font-medium">{{ other_participant.name }}</h3>
-                    <p class="text-sm text-gray-500">{{ conversation.task.title }}</p>
+                    <h3 class="font-semibold text-lg">{{ other_participant.name }}</h3>
+                    <div class="flex items-center">
+                        <p class="text-sm text-gray-500">{{ conversation.task.title }}</p>
+                        <span class="mx-2 text-gray-300">•</span>
+                        <span id="typing-indicator" class="text-sm text-blue-500 animate-pulse hidden">
+                            <i class="fas fa-pen-fancy mr-1"></i>typing...
+                        </span>
+                    </div>
                 </div>
             </div>
-            <div class="text-gray-500">
+            <div class="flex items-center space-x-3">
                 {% if conversation.task.status == 'Completed' %}
-                    <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">
-                        Completed
+                    <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
+                        <i class="fas fa-check-circle mr-1"></i>Completed
+                    </span>
+                {% else %}
+                    <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                        <i class="fas fa-circle mr-1"></i>Active
                     </span>
                 {% endif %}
             </div>
         </div>
 
-        <!-- Messages Area -->
-        <div class="flex-1 overflow-y-auto p-4" id="messages-container">
+        <!-- Enhanced Messages Area -->
+        <div class="flex-1 overflow-y-auto p-4 space-y-4" id="messages-container">
+            <div class="flex justify-center">
+                <span class="bg-gray-100 text-gray-600 text-xs px-4 py-2 rounded-full">
+                    <i class="fas fa-calendar-alt mr-1"></i>
+                    Chat started {{ conversation.created_at|date:"F d, Y" }}
+                </span>
+            </div>
+            
             {% for message in messages %}
-                <div class="mb-4 {% if message.sender == request.user %}ml-auto{% endif %} max-w-[70%]">
-                    <div class="{% if message.sender == request.user %}bg-blue-500 text-white{% else %}bg-gray-100 text-gray-900{% endif %} rounded-lg p-3">
-                        {{ message.content }}
+                {% if forloop.first or message.created_at|date:"Y-m-d" != messages|next:forloop.counter0|default:message.created_at|date:"Y-m-d" %}
+                    <div class="flex justify-center my-4">
+                        <span class="bg-gray-100 text-gray-600 text-xs px-4 py-2 rounded-full">
+                            {{ message.created_at|date:"F d, Y" }}
+                        </span>
                     </div>
-                    <div class="text-xs text-gray-500 mt-1 {% if message.sender == request.user %}text-right{% endif %}">
-                        {{ message.created_at|time:"g:i A" }}
-                        {% if message.is_read and message.sender == request.user %}
-                            <span class="ml-1 text-blue-500">
-                                <i class="fas fa-check-double"></i>
-                            </span>
+                {% endif %}
+                
+                <div class="message-wrapper {% if message.sender == request.user %}flex justify-end{% else %}flex justify-start{% endif %} animate-fade-in" 
+                     data-message-id="{{ message.id }}">
+                    <div class="max-w-[70%] group relative">
+                        {% if message.sender != request.user %}
+                            <div class="flex items-end space-x-2">
+                                <img src="{{ message.sender.profile_picture_url }}" 
+                                     alt="{{ message.sender.name }}"
+                                     class="w-6 h-6 rounded-full mb-1 object-cover">
                         {% endif %}
+                        
+                        <div class="{% if message.sender == request.user %}bg-blue-500 text-white{% else %}bg-gray-100 text-gray-900{% endif %} 
+                                    rounded-2xl px-4 py-2 shadow-sm hover:shadow-md transition-shadow duration-200
+                                    {% if message.sender == request.user %}rounded-br-none{% else %}rounded-bl-none{% endif %}">
+                            <p class="message-content whitespace-pre-wrap break-words">{{ message.content }}</p>
+                        </div>
+                        
+                        {% if message.sender != request.user %}
+                            </div>
+                        {% endif %}
+                        
+                        <div class="flex items-center {% if message.sender == request.user %}justify-end{% else %}justify-start{% endif %} mt-1 space-x-1">
+                            <span class="text-xs text-gray-500">
+                                {{ message.created_at|time:"g:i A" }}
+                            </span>
+                            {% if message.sender == request.user %}
+                                <span class="text-xs {% if message.is_read %}text-blue-500{% else %}text-gray-400{% endif %} transition-colors duration-300">
+                                    {% if message.is_read %}
+                                        <i class="fas fa-check-double"></i>
+                                    {% else %}
+                                        <i class="fas fa-check"></i>
+                                    {% endif %}
+                                </span>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
             {% endfor %}
         </div>
 
-        <!-- Message Input -->
+        <!-- Enhanced Message Input -->
         {% if not conversation.task.status == 'Completed' %}
-            <div class="border-t p-4">
-                <form id="message-form" class="flex space-x-2">
-                    <input type="text" 
-                           id="message-input"
-                           placeholder="Type your message..."
-                           class="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <div class="border-t p-4 bg-gray-50">
+                <form id="message-form" class="flex items-end space-x-3">
+                    <div class="flex-1 relative">
+                        <textarea 
+                            id="message-input"
+                            rows="1"
+                            placeholder="Type your message..."
+                            class="w-full px-4 py-3 border rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none max-h-32 pr-12"
+                            style="min-height: 44px;"
+                        ></textarea>
+                        <div class="absolute right-3 bottom-3 text-gray-400">
+                            <i class="fas fa-smile hover:text-blue-500 cursor-pointer transition-colors duration-200"></i>
+                        </div>
+                    </div>
                     <button type="submit" 
-                            class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition duration-150">
-                        Send
+                            class="bg-blue-500 hover:bg-blue-600 text-white p-3 rounded-full transition duration-150 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105"
+                            id="send-button"
+                            disabled>
+                        <i class="fas fa-paper-plane"></i>
                     </button>
                 </form>
             </div>
         {% else %}
-            <div class="border-t p-4 bg-gray-50 text-center text-gray-500">
-                This conversation is closed as the task has been completed
+            <div class="border-t p-4 bg-gray-50 text-center">
+                <div class="flex items-center justify-center space-x-2 text-gray-500">
+                    <i class="fas fa-lock"></i>
+                    <span>This conversation is closed as the task has been completed</span>
+                </div>
             </div>
         {% endif %}
     </div>
@@ -69,48 +132,173 @@
 {% block extra_js %}
 <script>
     const conversationId = '{{ conversation.id }}';
+    const currentUserId = '{{ request.user.id }}';
+    const wsScheme = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const chatSocket = new WebSocket(
-        'ws://' + window.location.host + '/ws/chat/' + conversationId + '/'
+        wsScheme + '//' + window.location.host + '/ws/chat/' + conversationId + '/'
     );
 
     const messagesContainer = document.getElementById('messages-container');
     const messageForm = document.getElementById('message-form');
     const messageInput = document.getElementById('message-input');
+    const sendButton = document.getElementById('send-button');
+    const typingIndicator = document.getElementById('typing-indicator');
+    
+    let typingTimeout;
+
+    // Auto-resize textarea
+    messageInput.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = (this.scrollHeight) + 'px';
+        sendButton.disabled = !this.value.trim();
+    });
+
+    // Typing indicator
+    messageInput.addEventListener('input', function() {
+        clearTimeout(typingTimeout);
+        
+        chatSocket.send(JSON.stringify({
+            'type': 'typing',
+            'is_typing': true
+        }));
+
+        typingTimeout = setTimeout(() => {
+            chatSocket.send(JSON.stringify({
+                'type': 'typing',
+                'is_typing': false
+            }));
+        }, 1000);
+    });
 
     chatSocket.onmessage = function(e) {
         const data = JSON.parse(e.data);
-        appendMessage(data);
+        
+        if (data.type === 'typing_status') {
+            if (data.user_id !== currentUserId) {
+                if (data.is_typing) {
+                    typingIndicator.classList.remove('hidden');
+                } else {
+                    typingIndicator.classList.add('hidden');
+                }
+            }
+        } else {
+            appendMessage(data);
+        }
     };
 
-    messageForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const message = messageInput.value.trim();
-        if (message) {
-            chatSocket.send(JSON.stringify({
-                'message': message
-            }));
-            messageInput.value = '';
-        }
-    });
-
     function appendMessage(data) {
-        const isCurrentUser = data.sender_id === '{{ request.user.id }}';
+        const isCurrentUser = data.sender_id === currentUserId;
+        const date = new Date(data.timestamp);
+        
         const messageHtml = `
-            <div class="mb-4 ${isCurrentUser ? 'ml-auto' : ''} max-w-[70%]">
-                <div class="${isCurrentUser ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-900'} rounded-lg p-3">
-                    ${data.message}
-                </div>
-                <div class="text-xs text-gray-500 mt-1 ${isCurrentUser ? 'text-right' : ''}">
-                    ${new Date(data.timestamp).toLocaleTimeString([], {hour: 'numeric', minute: '2-digit'})}
+            <div class="message-wrapper ${isCurrentUser ? 'flex justify-end' : 'flex justify-start'} animate-fade-in" 
+                 data-message-id="${data.message_id || ''}">
+                <div class="max-w-[70%] group relative">
+                    ${!isCurrentUser ? `
+                        <div class="flex items-end space-x-2">
+                            <img src="{{ other_participant.profile_picture_url }}" 
+                                 alt="{{ other_participant.name }}"
+                                 class="w-6 h-6 rounded-full mb-1 object-cover">
+                    ` : ''}
+                    <div class="${isCurrentUser ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-900'} 
+                                rounded-2xl px-4 py-2 shadow-sm hover:shadow-md transition-shadow duration-200
+                                ${isCurrentUser ? 'rounded-br-none' : 'rounded-bl-none'}">
+                        <p class="message-content whitespace-pre-wrap break-words">${data.message}</p>
+                    </div>
+                    ${!isCurrentUser ? '</div>' : ''}
+                    <div class="flex items-center ${isCurrentUser ? 'justify-end' : 'justify-start'} mt-1 space-x-1">
+                        <span class="text-xs text-gray-500">
+                            ${date.toLocaleTimeString([], {hour: 'numeric', minute: '2-digit'})}
+                        </span>
+                        ${isCurrentUser ? `
+                            <span class="text-xs text-gray-400 transition-colors duration-300">
+                                <i class="fas fa-check"></i>
+                            </span>
+                        ` : ''}
+                    </div>
                 </div>
             </div>
         `;
+        
         messagesContainer.insertAdjacentHTML('beforeend', messageHtml);
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
 
+    // Mark messages as read when visible
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const messageEl = entry.target;
+                const messageId = messageEl.dataset.messageId;
+                if (messageId) {
+                    chatSocket.send(JSON.stringify({
+                        'type': 'mark_read',
+                        'message_id': messageId
+                    }));
+                }
+            }
+        });
+    }, {
+        root: messagesContainer,
+        threshold: 1.0
+    });
+
+    // Observe new messages for read status
+    function observeNewMessages() {
+        document.querySelectorAll('.message-wrapper').forEach(message => {
+            observer.observe(message);
+        });
+    }
+
+    // Call on load and after new messages
+    observeNewMessages();
+
     // Auto-scroll to bottom on load
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+    // Handle connection status
+    chatSocket.onopen = function(e) {
+        console.log('WebSocket Connected');
+    };
+
+    chatSocket.onclose = function(e) {
+        console.log('WebSocket Disconnected. Attempting to reconnect...');
+        setTimeout(() => {
+            window.location.reload();
+        }, 3000);
+    };
+
+    // Add some basic error handling
+    chatSocket.onerror = function(err) {
+        console.error('WebSocket Error:', err);
+    };
+
+    // Prevent form submission on enter (allow shift+enter for new line)
+    messageInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            if (!sendButton.disabled) {
+                messageForm.dispatchEvent(new Event('submit'));
+            }
+        }
+    });
 </script>
+
+<style>
+    .animate-fade-in {
+        animation: fadeIn 0.3s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
 {% endblock %}
 {% endblock %}
