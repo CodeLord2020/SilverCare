@@ -15,7 +15,7 @@ urlpatterns = [
     path('media/upload/create/', TaskMediaUploadCreateView.as_view(), name='task_media_upload_create'),
     path("<uuid:pk>/upload-media/", TaskMediaUploadView.as_view(), name="task_media_upload"),
     path("<uuid:pk>/delete/", TaskDeleteView.as_view(), name="task_delete"),
-    path("<uuid:task_id>/apply/", TaskApplicationCreateView.as_view(), name="task_apply"),
+    path("<uuid:task_id>/apply/", TaskApplicationCreateView.as_view(), name="apply_task"),
     path("<uuid:task_id>/review/", ReviewCreateView.as_view(), name="task_review"),
     path("media/<int:pk>/delete/", task_media_delete, name="task_media_delete"),
 
