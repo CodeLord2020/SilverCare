@@ -62,6 +62,19 @@ INSTALLED_APPS = [
 #     'django.contrib.auth.backends.ModelBackend',
 # ]
 
+CHANNEL_LAYERS = {
+     'default': {  # This 'default' key is required
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    }
+    
+    # 'default': {
+    #     'BACKEND': 'channels_redis.core.RedisChannelLayer',
+    #     'CONFIG': {
+    #         "hosts": [('127.0.0.1', 6379)],
+    #     },
+    # },
+}
+
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -100,6 +113,7 @@ TEMPLATES = [
     },
 ]
 
+ASGI_APPLICATION = "silvercare.asgi.application"
 WSGI_APPLICATION = "silvercare.wsgi.application"
 
 
@@ -180,11 +194,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 #     'API_KEY': env('CLOUDINARY_API_KEY'),
 #     'API_SECRET': env('CLOUDINARY_API_SECRET')
 # }
-cloudinary.config(
-    cloud_name=config('CLOUD_NAME'),
-    api_key=config("API_KEY"),
-    api_secret=config("API_SECRET"),
-)
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
@@ -215,3 +224,13 @@ EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
 # EMAIL_USE_TLS = config("EMAIL_USE_TLS")
 ADMIN_EMAIL =config("ADMIN_EMAIL")
 EMAIL_USE_SSL = True
+
+
+# def configure_cloudinary():
+#     cloudinary.config(
+#         cloud_name=config('CLOUD_NAME'),
+#         api_key=config("API_KEY"),
+#         api_secret=config("API_SECRET"),
+#     )
+
+# configure_cloudinary()

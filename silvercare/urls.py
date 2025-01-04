@@ -35,6 +35,8 @@ urlpatterns = [
     path('test-mail/', TestMail.as_view(), name='testmail'),
     path('accounts/', include('accounts.urls')),
     path('tasks/', include('eldertasks.urls')),
+    path('messaging/', include('messaging.urls')),
+
 
 
 

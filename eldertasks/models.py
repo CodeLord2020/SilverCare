@@ -269,8 +269,8 @@ class TaskApplication(models.Model):
         # self.task.status = self.task.Status.IN_PROGRESS
         # self.task.save()
 
-        # self.status = self.Status.ACCEPTED
-        # self.save()
+        self.status = self.Status.ACCEPTED
+        self.save()
 
         self.task.status = self.task.Status.IN_PROGRESS
         self.task.save()

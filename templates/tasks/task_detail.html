@@ -116,6 +116,48 @@
         </div>
     </div>
 
+    {% if user.is_authenticated and task.status == 'Open' and not user_has_applied %}
+                    <div class="row mt-4 mb-2">
+                        <div class="col-12">
+                            <div class="d-grid">
+                                <button class="btn btn-primary btn-lg" type="button" data-bs-toggle="collapse" data-bs-target="#applicationForm" aria-expanded="false" aria-controls="applicationForm">
+                                    <i class="fas fa-hand-paper me-2"></i>Apply for This Task
+                                </button>
+                            </div>
+                            
+                            <div class="collapse mt-3" id="applicationForm">
+                                <div class="card border-0 shadow-sm">
+                                    <div class="card-header bg-light">
+                                        <h4 class="mb-0">Submit Your Application</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <form method="post" action="{% url 'tasks:apply_task' task.id %}">
+                                            {% csrf_token %}
+                                            <div class="mb-3">
+                                                <label for="application_message" class="form-label">Why are you a good fit for this task?</label>
+                                                <textarea 
+                                                    name="application_message" 
+                                                    id="application_message" 
+                                                    class="form-control" 
+                                                    rows="4" 
+                                                    maxlength="500" 
+                                                    required
+                                                ></textarea>
+                                                <div class="form-text">Share your relevant experience and why you'd like to help (max 500 characters)</div>
+                                            </div>
+                                            <div class="d-grid">
+                                                <button type="submit" class="btn btn-success">
+                                                    <i class="fas fa-paper-plane me-2"></i>Submit Application
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
     <!-- Applications Section -->
     <div class="row mt-5">
         <div class="col-12">
@@ -155,6 +197,7 @@
                         </div>
                     {% endif %}
                 </div> -->
+                
                 <div class="card-body p-0">
                     <!-- <div class="d-flex justify-content-between align-items-center border-bottom pb-3">
                         <h5 class="mb-0">Applications ({{ applications.count }})</h5>
@@ -231,6 +274,8 @@
             </div>
         </div>
     </div>
+
+
 
     <!-- Review Section -->
     {% load widget_tweaks %}
@@ -309,4 +354,17 @@
     }
 
 </style>
+
+
+{% block extra_js %}
+<script>
+    // Optional: Add smooth animation to form collapse
+    document.addEventListener('DOMContentLoaded', function() {
+        const applicationForm = document.getElementById('applicationForm');
+        applicationForm.addEventListener('show.bs.collapse', function () {
+            this.style.transition = 'all 0.3s ease';
+        });
+    });
+</script>
+{% endblock %}
 {% endblock %}

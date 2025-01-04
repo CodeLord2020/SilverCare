@@ -89,7 +89,12 @@ class TaskDetailView(DetailView):
         else:
             # Regular users don't see withdrawn applications
             applications = self.object.applications.exclude(status='Withdrawn')
-        
+
+        if self.request.user.is_authenticated:
+            context['user_has_applied'] = TaskApplication.objects.filter(
+                task=self.object,
+                helper=self.request.user
+            ).exists()
         context["applications"] = applications
         context["review_form"] = ReviewForm()  # If the task is completed, elder can leave a review
         context["medias"] = [media for media in self.object.taskmedia.all()]

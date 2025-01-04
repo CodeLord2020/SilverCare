@@ -2,6 +2,7 @@
 # messaging/urls.py
 from django.urls import path
 from . import views
+from .routing import websocket_urlpatterns
 
 app_name = 'messaging'
 
