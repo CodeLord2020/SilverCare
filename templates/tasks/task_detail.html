@@ -116,47 +116,8 @@
         </div>
     </div>
 
-    <!-- Applications Section -->
-    <div class="row mt-5">
-        <div class="col-12">
-            <div class="card border-0 shadow-sm">
-                <div class="card-header bg-secondary text-white">
-                    <h3 class="mb-0">Task Applications ({{ applications.count }})</h3>
-                </div>
-                <!-- <div class="card-body p-0">
-                    {% if applications %}
-                        <div class="list-group list-group-flush">
-                            {% for application in applications %}
-                                <div class="list-group-item d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h6 class="mb-1">{{ application.helper.name }}</h6>
-                                        <span class="badge 
-                                            {% if application.status == 'Pending' %}bg-warning
-                                            {% elif application.status == 'Accepted' %}bg-success
-                                            {% elif application.status == 'Rejected' %}bg-danger
-                                            {% else %}bg-secondary{% endif %}
-                                        ">
-                                            {{ application.get_status_display }}
-                                        </span>
-                                    </div>
-                                    {% if user.is_authenticated and user == task.elder %}
-                                        <div class="btn-group">
-                                            <a href="#" class="btn btn-sm btn-outline-primary">View Profile</a>
-                                            <a href="#" class="btn btn-sm btn-outline-success">Accept</a>
-                                            <a href="#" class="btn btn-sm btn-outline-danger">Reject</a>
-                                        </div>
-                                    {% endif %}
-                                </div>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        <div class="text-center py-4">
-                            <p class="text-muted mb-0">No applications yet</p>
-                        </div>
-                    {% endif %}
-                </div> -->
-                {% if user.is_authenticated and task.status == 'Open' and not user_has_applied %}
-                    <div class="row mt-4">
+    {% if user.is_authenticated and task.status == 'Open' and not user_has_applied %}
+                    <div class="row mt-4 mb-2">
                         <div class="col-12">
                             <div class="d-grid">
                                 <button class="btn btn-primary btn-lg" type="button" data-bs-toggle="collapse" data-bs-target="#applicationForm" aria-expanded="false" aria-controls="applicationForm">
@@ -196,6 +157,47 @@
                         </div>
                     </div>
                     {% endif %}
+
+    <!-- Applications Section -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-secondary text-white">
+                    <h3 class="mb-0">Task Applications ({{ applications.count }})</h3>
+                </div>
+                <!-- <div class="card-body p-0">
+                    {% if applications %}
+                        <div class="list-group list-group-flush">
+                            {% for application in applications %}
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-1">{{ application.helper.name }}</h6>
+                                        <span class="badge 
+                                            {% if application.status == 'Pending' %}bg-warning
+                                            {% elif application.status == 'Accepted' %}bg-success
+                                            {% elif application.status == 'Rejected' %}bg-danger
+                                            {% else %}bg-secondary{% endif %}
+                                        ">
+                                            {{ application.get_status_display }}
+                                        </span>
+                                    </div>
+                                    {% if user.is_authenticated and user == task.elder %}
+                                        <div class="btn-group">
+                                            <a href="#" class="btn btn-sm btn-outline-primary">View Profile</a>
+                                            <a href="#" class="btn btn-sm btn-outline-success">Accept</a>
+                                            <a href="#" class="btn btn-sm btn-outline-danger">Reject</a>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <p class="text-muted mb-0">No applications yet</p>
+                        </div>
+                    {% endif %}
+                </div> -->
+                
                 <div class="card-body p-0">
                     <!-- <div class="d-flex justify-content-between align-items-center border-bottom pb-3">
                         <h5 class="mb-0">Applications ({{ applications.count }})</h5>
